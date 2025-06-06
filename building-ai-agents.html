@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building AI Agents Guide - AI Transform Hub</title>
+    <meta name="description" content="Comprehensive practical guide for designing, implementing, and optimizing AI agents with real-world examples and code.">
+    
+    <!-- Same CSS as template -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header - Same as main site */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00d4ff;
+        }
+
+        .back-link {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #7c3aed;
+        }
+
+        /* Content Styles */
+        .content-header {
+            padding: 120px 0 60px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .content-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content-subtitle {
+            font-size: 1.3rem;
+            color: #b0b0b0;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .content-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .content-body {
+            padding: 60px 0;
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            color: #00d4ff;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .content-section h3 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin: 2rem 0 1rem;
+        }
+
+        .content-section h4 {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        .content-section p {
+            color: #e0e0e0;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .content-section ul, .content-section ol {
+            color: #e0e0e0;
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .highlight-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 2rem 0;
+        }
+
+        .highlight-box h4 {
+            color: #00d4ff;
+            margin-top: 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 2rem 0;
+        }
+
+        .warning-box h4 {
+            color: #ffc107;
+            margin-top: 0;
+        }
+
+        .critical-box {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 2rem 0;
+        }
+
+        .critical-box h4 {
+            color: #dc3545;
+            margin-top: 0;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: #00ff88;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .example-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .example-title {
+            color: #00d4ff;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .pattern-card {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid #7c3aed;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .pattern-card h5 {
+            color: #7c3aed;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .cta-section {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            margin: 0 1rem 1rem 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-title {
+                font-size: 2rem;
+            }
+            
+            .content-section {
+                padding: 25px;
+            }
+            
+            .examples-grid, .pattern-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">AI Transform Hub</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#assessment">Assessment</a></li>
+                <li><a href="index.html#roadmap">Roadmap</a></li>
+                <li><a href="index.html#resources">Resources</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="content-header">
+        <div class="container">
+            <a href="index.html#resources" class="back-link">← Back to Resources</a>
+            <h1 class="content-title">Building AI Agents</h1>
+            <p class="content-subtitle">Comprehensive Practical Guide for Designing, Implementing, and Optimizing AI Agents</p>
+            
+            <div class="content-meta">
+                <div class="meta-item">
+                    <span>🤖</span>
+                    <span>Agent Architecture</span>
+                </div>
+                <div class="meta-item">
+                    <span>⏱️</span>
+                    <span>45-min read</span>
+                </div>
+                <div class="meta-item">
+                    <span>💻</span>
+                    <span>Code Examples</span>
+                </div>
+                <div class="meta-item">
+                    <span>🛠️</span>
+                    <span>Practical Implementation</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="content-body">
+        <div class="container">
+            <!-- What Are AI Agents -->
+            <div class="content-section">
+                <h2>What Are AI Agents?</h2>
+                <p>AI agents are large language models (LLMs) that dynamically interact with their environment through tools, operating in a loop to accomplish complex tasks. Unlike rigid workflows with predefined paths, agents use LLMs to make decisions, select tools, and adapt based on environmental feedback.</p>
+                
+                <h3>Key Components</h3>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-title">Environment</div>
+                        <p>The system the agent operates in (e.g., a file system for coding or a customer support platform).</p>
+                    </div>
+                    <div class="example-card">
+                        <div class="example-title">Tools</div>
+                        <p>Interfaces that allow the agent to interact with the environment (e.g., reading files, executing commands, or querying databases).</p>
+                    </div>
+                    <div class="example-card">
+                        <div class="example-title">System Prompt</div>
+                        <p>Defines the agent's goals, constraints, and ideal behavior to guide its operation within the environment.</p>
+                    </div>
+                </div>
+
+                <h4>Basic Agent Loop Structure</h4>
+                <div class="code-block">
+                    <code>
+env = Environment()
+tools = Tools(env)
+system_prompt = "Goals, constraints, and how to act"
+while True:
+    action = llm.run(system_prompt + env.state)
+    env.state = tools.run(action)
+                    </code>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Performance Scaling</h4>
+                    <p>As LLMs improve, agents leveraging them become more capable, particularly for high-volume, low-to-medium complexity tasks where they can achieve superhuman performance.</p>
+                </div>
+            </div>
+
+            <!-- When to Build an Agent -->
+            <div class="content-section">
+                <h2>When to Build an Agent</h2>
+                <p>Before building an agent, evaluate the task using a checklist to ensure it warrants an agentic approach:</p>
+
+                <div class="warning-box">
+                    <h4>Agent Evaluation Checklist</h4>
+                    <ul>
+                        <li><strong>Is the task complex enough?</strong> Agents are ideal for tasks requiring multiple steps, dynamic decision-making, or tool usage that a single LLM call cannot handle efficiently.</li>
+                        <li><strong>Is the task valuable enough?</strong> The task's value should justify the development effort and operational costs (e.g., latency, token usage).</li>
+                        <li><strong>Are all parts of the task doable?</strong> Ensure the necessary tools, data, and permissions are available to complete the task.</li>
+                        <li><strong>What is the cost of error?</strong> Assess whether errors are tolerable or require strict guardrails and sandboxed testing to mitigate risks.</li>
+                    </ul>
+                </div>
+
+                <p>If simpler solutions (e.g., optimized single prompts with retrieval or in-context examples) suffice, avoid unnecessary complexity. Agents are best suited for open-ended tasks like coding (e.g., editing multiple files) or customer support (e.g., resolving tickets with external data), where flexibility and action-oriented workflows are critical.</p>
+            </div>
+
+            <!-- Core Principles -->
+            <div class="content-section">
+                <h2>Core Principles for Building Agents</h2>
+                
+                <div class="pattern-grid">
+                    <div class="pattern-card">
+                        <h5>1. Simplicity</h5>
+                        <p>Start with minimal complexity, using direct LLM API calls to maintain transparency and ease debugging. Avoid frameworks unless they demonstrably improve outcomes, as they can obscure prompts and responses.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>2. Transparency</h5>
+                        <p>Ensure the agent's planning and tool-use steps are explicit, making it easier to debug and build trust in the system.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>3. Tool Design (ACI)</h5>
+                        <p>Craft clear, well-documented tools with descriptive names, parameters, and usage examples to minimize errors and guide the LLM effectively.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Building Blocks and Patterns -->
+            <div class="content-section">
+                <h2>Building Blocks and Patterns</h2>
+                
+                <h3>Augmented LLM</h3>
+                <p>The foundation of an agent is an LLM enhanced with augmentations:</p>
+                <ul>
+                    <li><strong>Retrieval:</strong> Access to external data (e.g., knowledge bases, file contents)</li>
+                    <li><strong>Tools:</strong> Functions for interacting with the environment (e.g., read_file, edit_file)</li>
+                    <li><strong>Memory:</strong> Retaining conversation history or task context to maintain continuity</li>
+                </ul>
+
+                <h3>Workflow Patterns</h3>
+                <p>For structured tasks, consider these workflows before building a full agent:</p>
+
+                <div class="pattern-grid">
+                    <div class="pattern-card">
+                        <h5>Prompt Chaining</h5>
+                        <p>Decompose tasks into sequential LLM calls, with optional programmatic checks (gates) to ensure accuracy (e.g., generate marketing copy, then translate it).</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>Routing</h5>
+                        <p>Classify inputs and direct them to specialized prompts or tools (e.g., routing customer queries to refund or technical support processes).</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>Parallelization</h5>
+                        <p><strong>Sectioning:</strong> Break tasks into independent subtasks run in parallel. <strong>Voting:</strong> Run the same task multiple times to aggregate diverse outputs.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>Orchestrator-Workers</h5>
+                        <p>A central LLM delegates tasks to worker LLMs for complex, unpredictable tasks (e.g., editing multiple files in a coding project).</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>Evaluator-Optimizer</h5>
+                        <p>One LLM generates responses, while another evaluates and refines them iteratively (e.g., refining translations or search results).</p>
+                    </div>
+                </div>
+
+                <h3>Autonomous Agents</h3>
+                <p>For open-ended tasks, build autonomous agents that:</p>
+                <ul>
+                    <li>Plan and execute tasks independently, using tools based on environmental feedback</li>
+                    <li>Pause for human input at checkpoints or when encountering blockers</li>
+                    <li>Include stopping conditions (e.g., maximum iterations) to prevent runaway processes</li>
+                </ul>
+
+                <div class="warning-box">
+                    <h4>Testing Requirements</h4>
+                    <p>Test agents extensively in sandboxed environments to manage costs and errors. Agents excel in scenarios where the number of steps is unpredictable, and the LLM must make decisions dynamically.</p>
+                </div>
+            </div>
+
+            <!-- Practical Implementation -->
+            <div class="content-section">
+                <h2>Practical Implementation: A Code-Editing Agent</h2>
+                <p>Thorsten Ball's guide demonstrates building a code-editing agent in ~300 lines of Go code using Anthropic's Claude 3.7 Sonnet. The implementation is straightforward yet powerful, showcasing the simplicity of agent design.</p>
+
+                <h3>Setup</h3>
+                <p>Initialize a Go project with Anthropic's SDK:</p>
+                <div class="code-block">
+                    <code>
+mkdir code-editing-agent
+cd code-editing-agent
+go mod init agent
+touch main.go
+                    </code>
+                </div>
+
+                <p>Create an Agent struct with an LLM client (anthropic.Client) and tool definitions, reading user input from the terminal.</p>
+
+                <h3>Core Loop</h3>
+                <p>The agent operates in a loop:</p>
+                <ol>
+                    <li>Read user input (e.g., "Create fizzbuzz.js")</li>
+                    <li>Append input to the conversation history</li>
+                    <li>Send the conversation and tool definitions to the LLM</li>
+                    <li>Execute tools if requested, append results to the conversation, and repeat</li>
+                </ol>
+
+                <div class="code-block">
+                    <code>
+func (a *Agent) Run(ctx context.Context) error {
+    conversation := []anthropic.MessageParam{}
+    fmt.Println("Chat with Claude (use 'ctrl-c' to quit)")
+    readUserInput := true
+    for {
+        if readUserInput {
+            fmt.Print("\\u001b[94mYou\\u001b[0m: ")
+            userInput, ok := a.getUserMessage()
+            if !ok {
+                break
+            }
+            userMessage := anthropic.NewUserMessage(anthropic.NewTextBlock(userInput))
+            conversation = append(conversation, userMessage)
+        }
+        message, err := a.runInference(ctx, conversation)
+        if err != nil {
+            return err
+        }
+        conversation = append(conversation, message.ToParam())
+        toolResults := []anthropic.ContentBlockParamUnion{}
+        for _, content := range message.Content {
+            switch content.Type {
+            case "text":
+                fmt.Printf("\\u001b[93mClaude\\u001b[0m: %s\\n", content.Text)
+            case "tool_use":
+                result := a.executeTool(content.ID, content.Name, content.Input)
+                toolResults = append(toolResults, result)
+            }
+        }
+        if len(toolResults) == 0 {
+            readUserInput = true
+            continue
+        }
+        readUserInput = false
+        conversation = append(conversation, anthropic.NewUserMessage(toolResults...))
+    }
+    return nil
+}
+                    </code>
+                </div>
+
+                <h3>Tools</h3>
+                <p>The agent uses three essential tools:</p>
+
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-title">read_file</div>
+                        <p><strong>Description:</strong> Reads the contents of a file at a given relative path.</p>
+                        <p><strong>Input Schema:</strong> { "path": string }</p>
+                        <p><strong>Function:</strong> Reads the file and returns its contents as a string.</p>
+                    </div>
+                    <div class="example-card">
+                        <div class="example-title">list_files</div>
+                        <p><strong>Description:</strong> Lists files and directories at a given path (defaults to current directory).</p>
+                        <p><strong>Input Schema:</strong> { "path": string, optional }</p>
+                        <p><strong>Function:</strong> Returns a JSON array of file and directory names (directories with trailing /).</p>
+                    </div>
+                    <div class="example-card">
+                        <div class="example-title">edit_file</div>
+                        <p><strong>Description:</strong> Replaces old_str with new_str in a file or creates a new file if it doesn't exist.</p>
+                        <p><strong>Input Schema:</strong> { "path": string, "old_str": string, "new_str": string }</p>
+                        <p><strong>Function:</strong> Reads the file, replaces the text, and writes back; creates a new file if old_str is empty.</p>
+                    </div>
+                </div>
+
+                <h3>Example Interaction</h3>
+                <div class="highlight-box">
+                    <h4>Command: "Create fizzbuzz.js with a FizzBuzz implementation."</h4>
+                    <ul>
+                        <li>Agent checks for existing files with list_files({})</li>
+                        <li>Creates fizzbuzz.js with edit_file({"path":"fizzbuzz.js","old_str":"","new_str":"..."}), containing a JavaScript implementation</li>
+                        <li>Output: A file that runs with node fizzbuzz.js, printing numbers 1 to 100 with "Fizz", "Buzz", or "FizzBuzz" for multiples of 3, 5, or both</li>
+                    </ul>
+                </div>
+
+                <p>The agent dynamically combines tools without explicit instructions, relying on Claude's reasoning to decide when to list, read, or edit files.</p>
+            </div>
+
+            <!-- Prompt Design -->
+            <div class="content-section">
+                <h2>Prompt Design for Agents</h2>
+                <p>Parahelp's prompt design strategies emphasize structured, explicit prompts to guide agents, particularly for customer support tasks with clear success metrics (e.g., % of tickets resolved).</p>
+
+                <h3>Planning Prompt</h3>
+                <ul>
+                    <li><strong>Structure:</strong> Use XML with &lt;plan&gt;, &lt;step&gt;, and &lt;if_block&gt; tags to outline tool calls and conditional paths</li>
+                    <li><strong>Guidelines:</strong> Specify only the goal of the next steps, not the overall task. Follow company policies and use valid tool names</li>
+                    <li><strong>Challenges:</strong> Handling large context (~1.5K tokens) with dynamic ticket information and planning all possible paths based on tool outcomes</li>
+                </ul>
+
+                <div class="code-block">
+                    <code>
+&lt;plan&gt;
+    &lt;step&gt;
+        &lt;action_name&gt;search_helpcenter&lt;/action_name&gt;
+        &lt;description&gt;Search helpcenter for information about feature_name and how to resolve error_name&lt;/description&gt;
+    &lt;/step&gt;
+    &lt;if_block condition='&lt;helpcenter_result&gt; found'&gt;
+        &lt;step&gt;
+            &lt;action_name&gt;reply&lt;/action_name&gt;
+            &lt;description&gt;Reply to the user with instructions from &lt;helpcenter_result&gt;&lt;/description&gt;
+        &lt;/step&gt;
+    &lt;/if_block&gt;
+    &lt;if_block condition='no &lt;helpcenter_result&gt; found'&gt;
+        &lt;step&gt;
+            &lt;action_name&gt;reply&lt;/action_name&gt;
+            &lt;description&gt;Reply to the user that we need more information and ask for {{troubleshooting_info_name_from_policy_2}}&lt;/description&gt;
+        &lt;/step&gt;
+    &lt;/if_block&gt;
+&lt;/plan&gt;
+                    </code>
+                </div>
+
+                <h3>Manager Prompt</h3>
+                <p>The LLM acts as a manager to approve or reject tool calls based on policy and context:</p>
+                <ul>
+                    <li>Analyze ticket context and internal messages</li>
+                    <li>Check tool calls against policies and a checklist</li>
+                    <li>Return &lt;manager_verify&gt;accept&lt;/manager_verify&gt; or &lt;manager_verify&gt;reject&lt;/manager_verify&gt;</li>
+                </ul>
+
+                <h3>Best Practices</h3>
+                <ul>
+                    <li>Use markdown and XML for structured, parsable prompts</li>
+                    <li>Specify the model's thinking order (e.g., analyze context, check policy, decide)</li>
+                    <li>Emphasize critical instructions with "ALWAYS" or "IMPORTANT"</li>
+                    <li>Test prompts extensively to identify edge cases</li>
+                </ul>
+            </div>
+
+            <!-- Tool Design -->
+            <div class="content-section">
+                <h2>Tool Design (Agent-Computer Interface)</h2>
+                <p>Tools are critical for agent performance. Anthropic's guidelines emphasize designing tools as carefully as prompts:</p>
+
+                <div class="pattern-grid">
+                    <div class="pattern-card">
+                        <h5>Clarity</h5>
+                        <p>Use descriptive names, parameters, and examples. Include usage scenarios, edge cases, and boundaries from other tools.</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>Simplicity</h5>
+                        <p>Choose formats that are easy for the LLM to generate (e.g., string replacement over diffs for edit_file).</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>Natural Fit</h5>
+                        <p>Align tool output with natural text formats seen in training data (e.g., markdown over JSON for code).</p>
+                    </div>
+                    <div class="pattern-card">
+                        <h5>Error Prevention</h5>
+                        <p>Design tools to minimize mistakes (e.g., require absolute file paths to avoid relative path errors).</p>
+                    </div>
+                </div>
+
+                <div class="critical-box">
+                    <h4>Testing Requirement</h4>
+                    <p>Run tools with varied inputs to identify failure modes and iterate on descriptions. For a coding agent, edit_file using string replacement (old_str, new_str) is simpler and more reliable than generating diffs.</p>
+                </div>
+            </div>
+
+            <!-- Use Cases -->
+            <div class="content-section">
+                <h2>Proven Use Cases</h2>
+                
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-title">Customer Support</div>
+                        <p><strong>Why It Works:</strong> Combines conversation with actions like querying knowledge bases, issuing refunds, or updating tickets. Success is measurable via ticket resolution rates.</p>
+                        <p><strong>Example:</strong> An agent searches a help center for error resolutions, replies with instructions, or escalates if no solution is found, using tools like search_helpcenter and reply.</p>
+                    </div>
+                    <div class="example-card">
+                        <div class="example-title">Coding</div>
+                        <p><strong>Why It Works:</strong> Verifiable through automated tests, with clear problem spaces and feedback loops. Agents can iterate on solutions using test results.</p>
+                        <p><strong>Example:</strong> An agent creates and edits fizzbuzz.js or congrats.js, combining list_files, read_file, and edit_file to solve tasks like implementing FizzBuzz or decoding ROT13 strings.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Takeaways -->
+            <div class="content-section">
+                <h2>Key Takeaways</h2>
+                
+                <div class="highlight-box">
+                    <h4>Essential Guidelines</h4>
+                    <ul>
+                        <li><strong>Start Simple:</strong> Use direct LLM calls and add agentic complexity only when simpler solutions fall short</li>
+                        <li><strong>Design Clear Tools and Prompts:</strong> Craft well-documented tools and structured prompts (e.g., XML plans) to guide LLM behavior and improve reliability</li>
+                        <li><strong>Test Extensively:</strong> Use sandboxed environments and clear success metrics to iterate on prompts and tools</li>
+                        <li><strong>Leverage Workflows and Agents:</strong> Combine patterns like prompt chaining, routing, or autonomous agents to fit your use case</li>
+                        <li><strong>Focus on ACI:</strong> Invest as much effort in tool design as in prompt engineering to ensure the LLM uses tools effectively</li>
+                    </ul>
+                </div>
+
+                <p>By following these principles, developers can build effective, reliable AI agents tailored to specific tasks, leveraging the power of LLMs while maintaining control, transparency, and robustness.</p>
+            </div>
+        </div>
+    </main>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 style="margin-bottom: 2rem;">Ready to Build Your AI Agent?</h2>
+            <a href="conscious-ai.html" class="cta-button">Consciousness Engineering</a>
+            <a href="index.html#assessment" class="cta-button secondary-button">Assess AI Readiness</a>
+            <a href="index.html#resources" class="cta-button secondary-button">More Resources</a>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(10, 10, 10, 0.98)';
+            } else {
+                header.style.background = 'rgba(10, 10, 10, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>
