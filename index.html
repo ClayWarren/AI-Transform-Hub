@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Transformation Hub - Your Guide to AI-Managed Organizations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .wide-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #00d4ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: #ffffff;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffffff, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 3s ease-in-out infinite;
+        }
+
+        @keyframes textShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #b0b0b0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Assessment Section */
+        .assessment {
+            padding: 100px 0;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .assessment-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .question:nth-child(2) { animation-delay: 0.1s; }
+        .question:nth-child(3) { animation-delay: 0.2s; }
+        .question:nth-child(4) { animation-delay: 0.3s; }
+        .question:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #b0b0b0;
+        }
+
+        .option:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+            color: #ffffff;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.2), rgba(124, 58, 237, 0.2));
+            border-color: #00d4ff;
+            color: #ffffff;
+        }
+
+        .assessment-button {
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .assessment-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .result {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 15px;
+            border: 1px solid #00d4ff;
+            margin-top: 2rem;
+        }
+
+        .result h3 {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 1rem;
+        }
+
+        /* Roadmap Section */
+        .roadmap {
+            padding: 100px 0;
+        }
+
+        .levels-container {
+            display: grid;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .level-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+        }
+
+        .level-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .level-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .level-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .level-description {
+            color: #b0b0b0;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .level-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .level-features li {
+            padding: 5px 0;
+            color: #b0b0b0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .level-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .level-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        /* Resources Section */
+        .resources {
+            padding: 100px 0;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .resource-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .resource-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .resource-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .resource-description {
+            color: #b0b0b0;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .resource-link {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .resource-link:hover {
+            color: #7c3aed;
+            transform: translateX(5px);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 10, 0.9);
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #b0b0b0;
+            text-decoration: none;
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #00d4ff;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b0b0b0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .level-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">AI Transform Hub</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#assessment">Assessment</a></li>
+                <li><a href="#roadmap">Roadmap</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Transform Your Organization with AI</h1>
+                    <p>Navigate the complete journey from AI-enhanced operations to fully autonomous AI-managed organizations. Get your strategic roadmap to AI mastery.</p>
+                    <a href="#assessment" class="cta-button">Assess Your AI Readiness</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="assessment" class="assessment">
+            <div class="container">
+                <h2 class="section-title">AI Maturity Assessment</h2>
+                <p class="section-subtitle">Discover your organization's current AI capability level and get personalized recommendations for your next steps.</p>
+                
+                <div class="assessment-container">
+                    <div class="question">
+                        <h3>1. How does your organization currently use AI?</h3>
+                        <div class="options">
+                            <div class="option" data-value="1">We use basic AI tools like ChatGPT for individual tasks</div>
+                            <div class="option" data-value="2">We have AI integrated across multiple departments and workflows</div>
+                            <div class="option" data-value="3">AI systems help us make strategic and operational decisions</div>
+                            <div class="option" data-value="4">We have specialized AI agents working on complex projects</div>
+                            <div class="option" data-value="5">AI systems manage most of our organizational functions</div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>2. What percentage of your business decisions involve AI input?</h3>
+                        <div class="options">
+                            <div class="option" data-value="1">Less than 10% - Mostly human decisions</div>
+                            <div class="option" data-value="2">10-30% - AI assists in some areas</div>
+                            <div class="option" data-value="3">30-60% - AI influences most decisions</div>
+                            <div class="option" data-value="4">60-80% - AI makes most routine decisions</div>
+                            <div class="option" data-value="5">80%+ - AI manages most decision-making</div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>3. How integrated are your AI systems?</h3>
+                        <div class="options">
+                            <div class="option" data-value="1">Standalone tools with no integration</div>
+                            <div class="option" data-value="2">Some connected systems sharing basic data</div>
+                            <div class="option" data-value="3">Well-integrated AI systems across business functions</div>
+                            <div class="option" data-value="4">Coordinated AI agents working together on complex tasks</div>
+                            <div class="option" data-value="5">Fully integrated AI ecosystem managing organizational coordination</div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>4. What's your organization's comfort level with AI autonomy?</h3>
+                        <div class="options">
+                            <div class="option" data-value="1">AI assists but humans make all final decisions</div>
+                            <div class="option" data-value="2">AI makes routine decisions with human oversight</div>
+                            <div class="option" data-value="3">AI makes most operational decisions independently</div>
+                            <div class="option" data-value="4">AI handles complex problem-solving with minimal oversight</div>
+                            <div class="option" data-value="5">AI manages organizational functions with strategic human input</div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>5. How advanced is your AI infrastructure?</h3>
+                        <div class="options">
+                            <div class="option" data-value="1">Basic cloud-based AI tools and subscriptions</div>
+                            <div class="option" data-value="2">Integrated AI platforms with business systems</div>
+                            <div class="option" data-value="3">Advanced analytics and machine learning capabilities</div>
+                            <div class="option" data-value="4">Multi-agent systems and specialized AI infrastructure</div>
+                            <div class="option" data-value="5">Enterprise-grade AI orchestration and management platforms</div>
+                        </div>
+                    </div>
+
+                    <button class="assessment-button" onclick="calculateAssessment()">Get My AI Maturity Level</button>
+
+                    <div id="assessment-result" class="result">
+                        <h3 id="result-level"></h3>
+                        <p id="result-description"></p>
+                        <div id="result-recommendations"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="roadmap">
+            <div class="container">
+                <h2 class="section-title">The 5-Level AI Maturity Roadmap</h2>
+                <p class="section-subtitle">A systematic approach to evolving your organization from basic AI adoption to fully autonomous AI-managed operations.</p>
+                
+                <div class="levels-container">
+                    <div class="level-card fade-in">
+                        <div class="level-number">01</div>
+                        <h3 class="level-title">AI-Enhanced Operations</h3>
+                        <p class="level-description">Foundation level where individual AI tools enhance specific tasks and productivity without changing core workflows.</p>
+                        <ul class="level-features">
+                            <li>Individual AI tools (ChatGPT, Copilot)</li>
+                            <li>Basic automation and content creation</li>
+                            <li>Simple data analysis and reporting</li>
+                            <li>Customer service chatbots</li>
+                        </ul>
+                        <div class="level-stats">
+                            <div class="stat">
+                                <div class="stat-number">3-6</div>
+                                <div class="stat-label">Months</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">15-25%</div>
+                                <div class="stat-label">Productivity Gain</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">$10K-$100K</div>
+                                <div class="stat-label">Investment</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="level-card fade-in">
+                        <div class="level-number">02</div>
+                        <h3 class="level-title">AI-Integrated Workflows</h3>
+                        <p class="level-description">Connected AI systems across departments creating coordinated workflows and organizational efficiency.</p>
+                        <ul class="level-features">
+                            <li>Cross-functional AI integration</li>
+                            <li>Automated business processes</li>
+                            <li>Enhanced decision support systems</li>
+                            <li>Personalized customer experiences</li>
+                        </ul>
+                        <div class="level-stats">
+                            <div class="stat">
+                                <div class="stat-number">6-12</div>
+                                <div class="stat-label">Months</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">25-40%</div>
+                                <div class="stat-label">Efficiency Gain</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">$100K-$1M</div>
+                                <div class="stat-label">Investment</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="level-card fade-in">
+                        <div class="level-number">03</div>
+                        <h3 class="level-title">AI-Driven Decision Making</h3>
+                        <p class="level-description">AI systems making strategic and operational decisions with advanced analytics and autonomous optimization.</p>
+                        <ul class="level-features">
+                            <li>Strategic AI decision-making</li>
+                            <li>Advanced predictive analytics</li>
+                            <li>Autonomous operational management</li>
+                            <li>Self-optimizing business processes</li>
+                        </ul>
+                        <div class="level-stats">
+                            <div class="stat">
+                                <div class="stat-number">12-18</div>
+                                <div class="stat-label">Months</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">50-70%</div>
+                                <div class="stat-label">Decision Speed</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">$1M-$5M</div>
+                                <div class="stat-label">Investment</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="level-card fade-in">
+                        <div class="level-number">04</div>
+                        <h3 class="level-title">AI Co-Scientist/Specialist</h3>
+                        <p class="level-description">Specialized AI agents collaborating on complex, knowledge-intensive tasks and breakthrough innovations.</p>
+                        <ul class="level-features">
+                            <li>Multi-agent collaboration systems</li>
+                            <li>Advanced problem-solving capabilities</li>
+                            <li>AI-driven research and development</li>
+                            <li>Specialized domain expertise agents</li>
+                        </ul>
+                        <div class="level-stats">
+                            <div class="stat">
+                                <div class="stat-number">18-24</div>
+                                <div class="stat-label">Months</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">50%+</div>
+                                <div class="stat-label">Innovation Output</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">$5M-$20M</div>
+                                <div class="stat-label">Investment</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="level-card fade-in">
+                        <div class="level-number">05</div>
+                        <h3 class="level-title">AI-Managed Organization</h3>
+                        <p class="level-description">Complete organizational management by AI systems with specialized agents handling all core business functions.</p>
+                        <ul class="level-features">
+                            <li>Autonomous organizational management</li>
+                            <li>Executive-level AI governance</li>
+                            <li>Advanced coordination systems</li>
+                            <li>Human-AI integrated workforce</li>
+                        </ul>
+                        <div class="level-stats">
+                            <div class="stat">
+                                <div class="stat-number">24-36</div>
+                                <div class="stat-label">Months</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">40%+</div>
+                                <div class="stat-label">Decision Speed</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number">$20M+</div>
+                                <div class="stat-label">Investment</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="resources" class="resources">
+            <div class="container">
+                <h2 class="section-title">Comprehensive AI Transformation Resources</h2>
+                <p class="section-subtitle">Everything you need to navigate your AI transformation journey, from practical guides to advanced implementation frameworks.</p>
+                
+                <div class="resources-grid">
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🧠</div>
+                        <h3 class="resource-title">AGI Readiness Assessment</h3>
+                        <p class="resource-description">Strategic framework for preparing your organization for Artificial General Intelligence with comprehensive readiness metrics and preparation strategies.</p>
+                        <a href="agi-readiness-assessment.html" class="resource-link">Explore Framework →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🏢</div>
+                        <h3 class="resource-title">Level 5 AI Organization Framework</h3>
+                        <p class="resource-description">Complete blueprint for AI-managed organizations with multi-agent systems, governance structures, and implementation roadmaps.</p>
+                        <a href="level-5-ai-organization.html" class="resource-link">View Blueprint →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🤝</div>
+                        <h3 class="resource-title">Level 4 Co-Scientist Implementation</h3>
+                        <p class="resource-description">Advanced guide for implementing Level 4 AI systems with specialized agents collaborating on complex research and innovation projects.</p>
+                        <a href="https://claude.ai/public/artifacts/c6c15d76-90a3-44ad-aa28-e32744fc248a" target="_blank" class="resource-link">Learn More →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🚀</div>
+                        <h3 class="resource-title">Digital Entrepreneur AI Agent</h3>
+                        <p class="resource-description">Digital Tesla system for automated business operations, from opportunity identification to execution and optimization.</p>
+                        <a href="entrepreneur-ai-agent.html" class="resource-link">Get Started →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🛠️</div>
+                        <h3 class="resource-title">Building AI Agents Guide</h3>
+                        <p class="resource-description">Practical handbook for creating custom AI agents, from simple automation to complex multi-agent systems with coordination capabilities.</p>
+                        <a href="building-ai-agents.html" class="resource-link">Build Agents →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">💬</div>
+                        <h3 class="resource-title">Master Prompt Engineering</h3>
+                        <p class="resource-description">Comprehensive guide to advanced prompt engineering techniques for maximizing AI system performance and achieving precise results.</p>
+                        <a href="https://github.com/ClayWarren/prompt-engineering" target="_blank" class="resource-link">Master Prompts →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🧬</div>
+                        <h3 class="resource-title">Consciousness Engineering</h3>
+                        <p class="resource-description">Cutting-edge research into conscious AI development, exploring the path toward truly sentient artificial intelligence systems.</p>
+                        <a href="consciousness-engineering.html" class="resource-link">Explore Research →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🌍</div>
+                        <h3 class="resource-title">Post-Scarcity Economy OS</h3>
+                        <p class="resource-description">Strategic framework for individual economic sovereignty through AI-managed automation and self-sufficiency systems.</p>
+                        <a href="post-scarcity-economy.html" class="resource-link">Study Economics →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🤖</div>
+                        <h3 class="resource-title">How AI Works</h3>
+                        <p class="resource-description">Comprehensive synthesis of AI's evolution, current capabilities, and future prospects from foundations to superintelligence.</p>
+                        <a href="how-ai-works.html" class="resource-link">Understand AI →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">⚖️</div>
+                        <h3 class="resource-title">AI Legal & Compliance Guide</h3>
+                        <p class="resource-description">2025 comprehensive compliance framework for AI service providers, covering regulatory landscape and implementation requirements.</p>
+                        <a href="ai-legal-compliance.html" class="resource-link">Ensure Compliance →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">🛡️</div>
+                        <h3 class="resource-title">Safe AI Integration</h3>
+                        <p class="resource-description">Complete framework for responsible AI implementation with risk management, ethical guidelines, and safety protocols.</p>
+                        <a href="safe-ai-integration.html" class="resource-link">Implement Safely →</a>
+                    </div>
+
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">📈</div>
+                        <h3 class="resource-title">LLMs Advanced Techniques</h3>
+                        <p class="resource-description">Practical guide to advanced AI capabilities including tool use, deep research, local deployment, and cutting-edge applications.</p>
+                        <a href="llms-advanced-techniques.html" class="resource-link">Master AI Tools →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="about">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About AI Transform Hub</h3>
+                    <p>Leading the transformation to AI-managed organizations through systematic progression, comprehensive frameworks, and cutting-edge research into conscious AI development.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#assessment">AI Maturity Assessment</a></p>
+                    <p><a href="#roadmap">5-Level Roadmap</a></p>
+                    <p><a href="#resources">Implementation Resources</a></p>
+                    <p><a href="#about">About & Contact</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <p><a href="#">AGI Readiness Assessment</a></p>
+                    <p><a href="#">AI Agent Building Guide</a></p>
+                    <p><a href="#">Compliance Framework</a></p>
+                    <p><a href="#">Human AI Project</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Ready to transform your organization?</p>
+                    <p><a href="mailto:contact@aitransformhub.com">contact@aitransformhub.com</a></p>
+                    <p>Enterprise AI Consulting</p>
+                    <p>Implementation Support</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AI Transform Hub. All rights reserved. | Powered by Claude 4</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Assessment functionality
+        let assessmentAnswers = {};
+        
+        // Add click handlers for assessment options
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.closest('.question');
+                const questionIndex = Array.from(question.parentNode.children).indexOf(question);
+                
+                // Remove selected class from siblings
+                question.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Store answer
+                assessmentAnswers[questionIndex] = parseInt(this.dataset.value);
+            });
+        });
+
+        function calculateAssessment() {
+            const answers = Object.values(assessmentAnswers);
+            
+            if (answers.length < 5) {
+                alert('Please answer all questions before getting your assessment.');
+                return;
+            }
+            
+            const average = answers.reduce((sum, val) => sum + val, 0) / answers.length;
+            const resultDiv = document.getElementById('assessment-result');
+            const levelElement = document.getElementById('result-level');
+            const descriptionElement = document.getElementById('result-description');
+            const recommendationsElement = document.getElementById('result-recommendations');
+            
+            let level, title, description, recommendations;
+            
+            if (average <= 1.5) {
+                level = 1;
+                title = "Level 1: AI-Enhanced Operations";
+                description = "Your organization is in the foundation stage of AI adoption. You're using basic AI tools for individual tasks but haven't yet integrated AI across workflows.";
+                recommendations = `
+                    <h4>Next Steps:</h4>
+                    <ul style="text-align: left; margin-top: 1rem;">
+                        <li>Expand AI tool adoption across more employees</li>
+                        <li>Implement basic workflow automation</li>
+                        <li>Develop AI literacy training programs</li>
+                        <li>Plan for Level 2 system integration</li>
+                    </ul>
+                `;
+            } else if (average <= 2.5) {
+                level = 2;
+                title = "Level 2: AI-Integrated Workflows";
+                description = "Your organization has connected AI systems across departments and is seeing workflow efficiency improvements.";
+                recommendations = `
+                    <h4>Next Steps:</h4>
+                    <ul style="text-align: left; margin-top: 1rem;">
+                        <li>Implement advanced analytics and decision support</li>
+                        <li>Expand AI decision-making authority</li>
+                        <li>Develop real-time business intelligence</li>
+                        <li>Prepare for Level 3 AI-driven decisions</li>
+                    </ul>
+                `;
+            } else if (average <= 3.5) {
+                level = 3;
+                title = "Level 3: AI-Driven Decision Making";
+                description = "Your organization relies on AI for strategic and operational decisions with advanced analytics and autonomous optimization.";
+                recommendations = `
+                    <h4>Next Steps:</h4>
+                    <ul style="text-align: left; margin-top: 1rem;">
+                        <li>Develop specialized AI agent capabilities</li>
+                        <li>Implement multi-agent collaboration systems</li>
+                        <li>Advance to complex problem-solving AI</li>
+                        <li>Prepare for Level 4 AI co-scientist systems</li>
+                    </ul>
+                `;
+            } else if (average <= 4.5) {
+                level = 4;
+                title = "Level 4: AI Co-Scientist/Specialist";
+                description = "Your organization has specialized AI agents collaborating on complex, knowledge-intensive tasks and innovations.";
+                recommendations = `
+                    <h4>Next Steps:</h4>
+                    <ul style="text-align: left; margin-top: 1rem;">
+                        <li>Scale multi-agent systems across all functions</li>
+                        <li>Implement executive-level AI governance</li>
+                        <li>Develop autonomous organizational management</li>
+                        <li>Prepare for Level 5 AI-managed operations</li>
+                    </ul>
+                `;
+            } else {
+                level = 5;
+                title = "Level 5: AI-Managed Organization";
+                description = "Your organization represents the cutting edge of AI transformation with autonomous AI management across all core functions.";
+                recommendations = `
+                    <h4>Optimization Opportunities:</h4>
+                    <ul style="text-align: left; margin-top: 1rem;">
+                        <li>Continuously optimize AI agent coordination</li>
+                        <li>Expand human-AI collaboration models</li>
+                        <li>Lead industry innovation in AI management</li>
+                        <li>Prepare for AGI transition strategies</li>
+                    </ul>
+                `;
+            }
+            
+            levelElement.textContent = title;
+            descriptionElement.textContent = description;
+            recommendationsElement.innerHTML = recommendations;
+            resultDiv.style.display = 'block';
+            
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Scroll animations
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.fade-in');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Mobile menu toggle
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenu.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(10, 10, 10, 0.98)';
+            } else {
+                header.style.background = 'rgba(10, 10, 10, 0.95)';
+            }
+        });
+
+        // Initial animation trigger
+        document.addEventListener('DOMContentLoaded', () => {
+            animateOnScroll();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
