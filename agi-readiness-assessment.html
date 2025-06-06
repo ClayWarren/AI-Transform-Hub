@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGI Readiness Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .progress-container {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .intro h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .intro p {
+            color: #6c757d;
+            font-size: 1.1em;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .organization-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .org-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .org-option:hover {
+            border-color: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.2);
+        }
+
+        .org-option.selected {
+            border-color: #3498db;
+            background: #f0f8ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .org-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .org-option h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+
+        .org-option p {
+            color: #6c757d;
+            font-size: 0.95em;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .org-details {
+            font-size: 0.85em;
+            color: #95a5a6;
+            font-style: italic;
+        }
+
+        .question-section {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .question-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dimension-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .dimension-header h3 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .question h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            background: #f0f8ff;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 1.5em;
+            opacity: 0.9;
+        }
+
+        .readiness-level {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .level-unprepared { background: #ffebee; color: #c62828; }
+        .level-aware { background: #fff3e0; color: #ef6c00; }
+        .level-developing { background: #f3e5f5; color: #7b1fa2; }
+        .level-advanced { background: #e8f5e8; color: #2e7d32; }
+        .level-ready { background: #e3f2fd; color: #1565c0; }
+
+        .dimension-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dimension-score {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .dimension-score h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .score-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f, #2ecc71, #3498db);
+            transition: width 0.5s ease;
+        }
+
+        .recommendations {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .recommendations h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .recommendations li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .cta {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .cta h3 {
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header, .content {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .dimension-scores {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AGI Readiness Assessment</h1>
+            <p>Evaluate your organization's preparedness for the Artificial General Intelligence transition</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 64 questions completed</div>
+        </div>
+
+        <div class="content">
+            <div class="intro" id="intro">
+                <h2>Assess Your AGI Readiness in 10 Minutes</h2>
+                <p>Leading experts predict AGI arrival by late 2025-2027. Organizations that prepare systematically now will capture competitive advantages, while those caught unprepared face existential risks.</p>
+                
+                <div class="organization-selector">
+                    <div class="org-option" onclick="selectOrganizationType('enterprise')">
+                        <span class="org-icon">🏢</span>
+                        <h3>Enterprise</h3>
+                        <p>Large organizations with 500+ employees, complex operations, and significant resources</p>
+                        <div class="org-details">Comprehensive governance, multi-year strategic planning, dedicated R&D</div>
+                    </div>
+                    
+                    <div class="org-option" onclick="selectOrganizationType('small_business')">
+                        <span class="org-icon">🏪</span>
+                        <h3>Small Business</h3>
+                        <p>Small to medium businesses with 10-500 employees, agile operations</p>
+                        <div class="org-details">Focused strategy, limited resources, rapid decision-making</div>
+                    </div>
+                    
+                    <div class="org-option" onclick="selectOrganizationType('consumer')">
+                        <span class="org-icon">👤</span>
+                        <h3>Individual/Consultant</h3>
+                        <p>Professionals, consultants, entrepreneurs, and individuals preparing for AGI</p>
+                        <div class="org-details">Personal readiness, skill development, career planning</div>
+                    </div>
+                </div>
+
+                <div class="cta" id="startCTA" style="display: none;">
+                    <h3>🚀 Start Your AGI Readiness Assessment</h3>
+                    <p id="ctaDescription">Discover your specific strengths, gaps, and strategic priorities for the AGI transition.</p>
+                    <button class="start-btn" onclick="startAssessment()">Begin Assessment</button>
+                </div>
+            </div>
+
+            <!-- Questions will be dynamically generated here -->
+            <div id="questions-container"></div>
+
+            <!-- Results Section -->
+            <div class="results" id="results">
+                <div class="score-display">
+                    <div class="score-number" id="totalScore">0</div>
+                    <div class="score-label">AGI Readiness Score</div>
+                </div>
+
+                <div class="readiness-level" id="readinessLevel">
+                    <!-- Level will be set dynamically -->
+                </div>
+
+                <div class="dimension-scores" id="dimensionScores">
+                    <!-- Dimension scores will be populated here -->
+                </div>
+
+                <div class="recommendations" id="recommendations">
+                    <!-- Recommendations will be populated here -->
+                </div>
+
+                <div class="cta">
+                    <h3>Ready to Accelerate Your AGI Preparation?</h3>
+                    <p>Get a comprehensive AGI Readiness Assessment with detailed analysis, strategic recommendations, and implementation roadmap.</p>
+                    <button class="start-btn" onclick="window.open('mailto:contact@example.com?subject=AGI Readiness Assessment Consultation', '_blank')">Schedule Consultation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dimensions = [
+            {
+                name: "Strategic Vision and Leadership",
+                questions: [
+                    {
+                        text: "How well does your executive team understand AGI implications and timeline?",
+                        options: [
+                            { text: "Deep understanding with regular strategic discussions", points: 10 },
+                            { text: "Good awareness with some strategic planning", points: 8 },
+                            { text: "Basic understanding with limited planning", points: 6 },
+                            { text: "Minimal awareness with no structured planning", points: 4 },
+                            { text: "No understanding or awareness of AGI implications", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What percentage of your annual budget is allocated to AI/AGI readiness initiatives?",
+                        options: [
+                            { text: "More than 5% of revenue", points: 10 },
+                            { text: "3-5% of revenue", points: 8 },
+                            { text: "1-3% of revenue", points: 6 },
+                            { text: "Less than 1% of revenue", points: 4 },
+                            { text: "No dedicated budget for AI/AGI initiatives", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How comprehensive is your organization's long-term strategic vision for AGI integration?",
+                        options: [
+                            { text: "Detailed 10+ year AGI strategy with multiple scenarios", points: 10 },
+                            { text: "5-year strategy with some AGI considerations", points: 8 },
+                            { text: "3-year plan with basic AGI awareness", points: 6 },
+                            { text: "Annual planning with minimal AGI consideration", points: 4 },
+                            { text: "No long-term strategic planning for AGI", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How effectively does your organization communicate AGI strategy to stakeholders?",
+                        options: [
+                            { text: "Regular, transparent communication with all stakeholders", points: 10 },
+                            { text: "Quarterly updates with key stakeholders", points: 8 },
+                            { text: "Annual communication with limited transparency", points: 6 },
+                            { text: "Ad-hoc communication with minimal detail", points: 4 },
+                            { text: "No structured AGI communication strategy", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What level of commitment does your board/leadership show for AGI preparation?",
+                        options: [
+                            { text: "Active champion with dedicated oversight committee", points: 10 },
+                            { text: "Strong support with regular review and approval", points: 8 },
+                            { text: "General support with periodic check-ins", points: 6 },
+                            { text: "Neutral stance with minimal involvement", points: 4 },
+                            { text: "Skeptical or resistant to AGI preparation", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well-defined is your competitive strategy for the AGI era?",
+                        options: [
+                            { text: "Clear AGI-enabled competitive advantages identified", points: 10 },
+                            { text: "Basic competitive analysis with AGI considerations", points: 8 },
+                            { text: "Traditional competitive strategy with minimal AGI impact", points: 6 },
+                            { text: "Limited competitive analysis and planning", points: 4 },
+                            { text: "No competitive strategy for AGI transition", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How mature is your organization's business model innovation capability?",
+                        options: [
+                            { text: "Continuous business model innovation with AGI integration", points: 10 },
+                            { text: "Regular business model evaluation and adaptation", points: 8 },
+                            { text: "Periodic business model reviews", points: 6 },
+                            { text: "Limited business model innovation", points: 4 },
+                            { text: "Static business model with no innovation focus", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is the quality of your external AGI advisory and partnerships?",
+                        options: [
+                            { text: "Strong network of AGI experts and strategic partnerships", points: 10 },
+                            { text: "Some external advisors and technology partnerships", points: 8 },
+                            { text: "Limited external expertise and partnerships", points: 6 },
+                            { text: "Minimal external AGI advisory relationships", points: 4 },
+                            { text: "No external AGI expertise or partnerships", points: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Technological Infrastructure", 
+                questions: [
+                    {
+                        text: "How advanced are your current AI implementations across business functions?",
+                        options: [
+                            { text: "Advanced AI across all major functions with measurable ROI", points: 10 },
+                            { text: "Comprehensive AI in most functions with good results", points: 8 },
+                            { text: "Systematic AI in key functions with mixed results", points: 6 },
+                            { text: "Limited AI pilots with minimal business impact", points: 4 },
+                            { text: "No meaningful AI implementation", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How would you rate your data infrastructure quality and accessibility?",
+                        options: [
+                            { text: "Enterprise-grade data architecture with real-time capabilities", points: 10 },
+                            { text: "Strong data infrastructure with good integration", points: 8 },
+                            { text: "Adequate data systems with some integration challenges", points: 6 },
+                            { text: "Basic data infrastructure with significant limitations", points: 4 },
+                            { text: "Poor data quality and accessibility", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How scalable is your computing infrastructure for AGI workloads?",
+                        options: [
+                            { text: "Cloud-native with elastic scaling and specialized AI hardware", points: 10 },
+                            { text: "Hybrid cloud with good scaling capabilities", points: 8 },
+                            { text: "Traditional infrastructure with some cloud integration", points: 6 },
+                            { text: "Limited cloud adoption with scaling constraints", points: 4 },
+                            { text: "Legacy infrastructure with minimal cloud capabilities", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How robust are your API and integration capabilities?",
+                        options: [
+                            { text: "API-first architecture with comprehensive integration platform", points: 10 },
+                            { text: "Strong API capabilities with good integration tools", points: 8 },
+                            { text: "Basic APIs with standard integration capabilities", points: 6 },
+                            { text: "Limited API development with integration challenges", points: 4 },
+                            { text: "Minimal API capabilities and poor integration", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is the maturity of your cybersecurity framework for AI systems?",
+                        options: [
+                            { text: "Comprehensive AI-specific security with zero-trust architecture", points: 10 },
+                            { text: "Strong security framework with AI considerations", points: 8 },
+                            { text: "Standard security with basic AI protections", points: 6 },
+                            { text: "Limited security measures for AI systems", points: 4 },
+                            { text: "Minimal AI security considerations", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How advanced are your monitoring and observability systems?",
+                        options: [
+                            { text: "Real-time monitoring with AI performance analytics", points: 10 },
+                            { text: "Comprehensive monitoring with good analytics", points: 8 },
+                            { text: "Basic monitoring with standard reporting", points: 6 },
+                            { text: "Limited monitoring capabilities", points: 4 },
+                            { text: "Minimal system monitoring and observability", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your organization's track record with technology adoption?",
+                        options: [
+                            { text: "Early adopter with systematic technology evaluation", points: 10 },
+                            { text: "Fast follower with structured adoption processes", points: 8 },
+                            { text: "Mainstream adoption with careful evaluation", points: 6 },
+                            { text: "Conservative adoption with lengthy evaluation", points: 4 },
+                            { text: "Technology laggard with resistance to change", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How prepared is your infrastructure for real-time AGI interactions?",
+                        options: [
+                            { text: "Low-latency architecture designed for real-time AI", points: 10 },
+                            { text: "Good performance with some real-time capabilities", points: 8 },
+                            { text: "Standard performance with batch processing focus", points: 6 },
+                            { text: "Limited real-time capabilities", points: 4 },
+                            { text: "No real-time processing capabilities", points: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Human Capital and Workforce",
+                questions: [
+                    {
+                        text: "What percentage of your workforce has basic AI literacy?",
+                        options: [
+                            { text: "More than 80% with advanced AI skills in key roles", points: 10 },
+                            { text: "60-80% with good AI understanding", points: 8 },
+                            { text: "40-60% with basic AI awareness", points: 6 },
+                            { text: "20-40% with limited AI knowledge", points: 4 },
+                            { text: "Less than 20% with minimal AI understanding", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How comprehensive are your AI training and development programs?",
+                        options: [
+                            { text: "Structured AI curricula with hands-on experience", points: 10 },
+                            { text: "Regular training programs with practical applications", points: 8 },
+                            { text: "Basic training with limited practical experience", points: 6 },
+                            { text: "Ad-hoc training with minimal structure", points: 4 },
+                            { text: "No formal AI training programs", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How effectively does your workforce collaborate with AI systems?",
+                        options: [
+                            { text: "Seamless human-AI collaboration across functions", points: 10 },
+                            { text: "Good collaboration in most areas", points: 8 },
+                            { text: "Basic collaboration with some resistance", points: 6 },
+                            { text: "Limited collaboration with significant challenges", points: 4 },
+                            { text: "Poor or no human-AI collaboration", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How prepared is your workforce for role evolution in the AGI era?",
+                        options: [
+                            { text: "Proactive reskilling with clear career paths", points: 10 },
+                            { text: "Systematic workforce development planning", points: 8 },
+                            { text: "Basic workforce transition planning", points: 6 },
+                            { text: "Limited workforce development initiatives", points: 4 },
+                            { text: "No workforce transition planning", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your organization's culture regarding AI adoption?",
+                        options: [
+                            { text: "Enthusiastic embracing of AI with innovation focus", points: 10 },
+                            { text: "Generally positive with good adoption rates", points: 8 },
+                            { text: "Mixed reception with moderate adoption", points: 6 },
+                            { text: "Cautious approach with slow adoption", points: 4 },
+                            { text: "Resistant culture with poor AI adoption", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How effective are your change management capabilities?",
+                        options: [
+                            { text: "Excellent change management with proven track record", points: 10 },
+                            { text: "Strong change management with good success rates", points: 8 },
+                            { text: "Adequate change management with mixed results", points: 6 },
+                            { text: "Limited change management capabilities", points: 4 },
+                            { text: "Poor change management with resistance issues", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What percentage of your leaders can effectively manage AI-human teams?",
+                        options: [
+                            { text: "More than 80% with advanced AI management skills", points: 10 },
+                            { text: "60-80% with good AI team management", points: 8 },
+                            { text: "40-60% with basic AI management understanding", points: 6 },
+                            { text: "20-40% with limited AI management experience", points: 4 },
+                            { text: "Less than 20% with AI management capabilities", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well does your performance management system account for AI collaboration?",
+                        options: [
+                            { text: "Performance systems fully integrated with AI metrics", points: 10 },
+                            { text: "Performance management includes AI collaboration", points: 8 },
+                            { text: "Basic integration of AI performance measures", points: 6 },
+                            { text: "Limited AI considerations in performance reviews", points: 4 },
+                            { text: "No AI integration in performance management", points: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Risk Management and Governance",
+                questions: [
+                    {
+                        text: "How comprehensive is your AI risk assessment framework?",
+                        options: [
+                            { text: "Comprehensive AGI risk framework with proactive mitigation", points: 10 },
+                            { text: "Systematic AI risk assessment with good processes", points: 8 },
+                            { text: "Basic risk identification with some mitigation", points: 6 },
+                            { text: "Limited risk assessment with ad-hoc processes", points: 4 },
+                            { text: "No systematic AI risk assessment", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What governance structures do you have for AI/AGI decision-making?",
+                        options: [
+                            { text: "Dedicated AI governance with cross-functional oversight", points: 10 },
+                            { text: "AI committee with regular decision-making authority", points: 8 },
+                            { text: "Basic AI governance with periodic reviews", points: 6 },
+                            { text: "Ad-hoc AI decision-making with limited structure", points: 4 },
+                            { text: "No formal AI governance structure", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well do you understand and comply with current AI regulations?",
+                        options: [
+                            { text: "Full compliance with proactive regulatory preparation", points: 10 },
+                            { text: "Good compliance with regular regulatory monitoring", points: 8 },
+                            { text: "Basic compliance with some gaps", points: 6 },
+                            { text: "Limited compliance with significant gaps", points: 4 },
+                            { text: "Poor regulatory understanding and compliance", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How mature are your AI ethics and safety protocols?",
+                        options: [
+                            { text: "Comprehensive ethics framework with safety protocols", points: 10 },
+                            { text: "Good ethics guidelines with basic safety measures", points: 8 },
+                            { text: "Basic ethics considerations with limited safety", points: 6 },
+                            { text: "Minimal ethics framework with ad-hoc safety", points: 4 },
+                            { text: "No formal AI ethics or safety protocols", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your preparedness for AI-related crisis management?",
+                        options: [
+                            { text: "Comprehensive AI crisis plans with tested procedures", points: 10 },
+                            { text: "Good crisis planning with some AI considerations", points: 8 },
+                            { text: "Basic crisis management with limited AI focus", points: 6 },
+                            { text: "General crisis plans with minimal AI preparation", points: 4 },
+                            { text: "No AI-specific crisis management planning", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How robust are your AI audit and accountability systems?",
+                        options: [
+                            { text: "Comprehensive AI auditability with full traceability", points: 10 },
+                            { text: "Good audit trails with most AI systems covered", points: 8 },
+                            { text: "Basic auditing with some AI system coverage", points: 6 },
+                            { text: "Limited auditing with minimal AI focus", points: 4 },
+                            { text: "No systematic AI audit capabilities", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your approach to AI bias detection and mitigation?",
+                        options: [
+                            { text: "Systematic bias testing with automated mitigation", points: 10 },
+                            { text: "Regular bias assessment with mitigation protocols", points: 8 },
+                            { text: "Basic bias awareness with some testing", points: 6 },
+                            { text: "Limited bias consideration with minimal testing", points: 4 },
+                            { text: "No systematic bias detection or mitigation", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How prepared are you for AGI-specific legal and liability issues?",
+                        options: [
+                            { text: "Comprehensive legal framework for AGI scenarios", points: 10 },
+                            { text: "Good legal preparation with AI expertise", points: 8 },
+                            { text: "Basic legal considerations with some AI focus", points: 6 },
+                            { text: "Limited legal preparation for AI issues", points: 4 },
+                            { text: "No specific legal preparation for AGI", points: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Operational Adaptability",
+                questions: [
+                    {
+                        text: "How quickly can your organization adapt business processes?",
+                        options: [
+                            { text: "Rapid process adaptation with agile methodologies", points: 10 },
+                            { text: "Good adaptability with structured change processes", points: 8 },
+                            { text: "Moderate adaptability with some bureaucracy", points: 6 },
+                            { text: "Slow adaptation with significant process overhead", points: 4 },
+                            { text: "Very slow or resistant to process changes", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How flexible is your organizational structure?",
+                        options: [
+                            { text: "Highly flexible with cross-functional teams", points: 10 },
+                            { text: "Good flexibility with matrix organization", points: 8 },
+                            { text: "Moderate flexibility with some silos", points: 6 },
+                            { text: "Limited flexibility with rigid hierarchies", points: 4 },
+                            { text: "Inflexible with strong departmental boundaries", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How effectively can you reallocate resources and priorities?",
+                        options: [
+                            { text: "Dynamic resource allocation with portfolio management", points: 10 },
+                            { text: "Good resource flexibility with quarterly adjustments", points: 8 },
+                            { text: "Moderate reallocation with annual budget cycles", points: 6 },
+                            { text: "Limited reallocation with budget constraints", points: 4 },
+                            { text: "Minimal resource flexibility", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well do you integrate new technologies into operations?",
+                        options: [
+                            { text: "Seamless integration with proven methodologies", points: 10 },
+                            { text: "Good integration with structured approaches", points: 8 },
+                            { text: "Moderate integration with some challenges", points: 6 },
+                            { text: "Limited integration with significant difficulties", points: 4 },
+                            { text: "Poor technology integration capabilities", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your track record with operational transformation?",
+                        options: [
+                            { text: "Excellent transformation track record with multiple successes", points: 10 },
+                            { text: "Good transformation experience with most successes", points: 8 },
+                            { text: "Mixed transformation results with lessons learned", points: 6 },
+                            { text: "Limited transformation experience with some failures", points: 4 },
+                            { text: "Poor transformation track record", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How robust are your performance monitoring and optimization systems?",
+                        options: [
+                            { text: "Real-time monitoring with automated optimization", points: 10 },
+                            { text: "Comprehensive monitoring with regular optimization", points: 8 },
+                            { text: "Good monitoring with periodic optimization", points: 6 },
+                            { text: "Basic monitoring with limited optimization", points: 4 },
+                            { text: "Minimal monitoring and optimization", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well does your organization handle uncertainty and ambiguity?",
+                        options: [
+                            { text: "Thrives in uncertainty with adaptive strategies", points: 10 },
+                            { text: "Good handling of uncertainty with scenario planning", points: 8 },
+                            { text: "Moderate comfort with uncertainty", points: 6 },
+                            { text: "Limited tolerance for uncertainty", points: 4 },
+                            { text: "Poor handling of uncertainty and ambiguity", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How effectively do you scale successful pilots to full implementation?",
+                        options: [
+                            { text: "Excellent scaling with systematic methodologies", points: 10 },
+                            { text: "Good scaling success with structured approaches", points: 8 },
+                            { text: "Moderate scaling success with some challenges", points: 6 },
+                            { text: "Limited scaling success with frequent issues", points: 4 },
+                            { text: "Poor pilot-to-scale track record", points: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Innovation and R&D Capacity",
+                questions: [
+                    {
+                        text: "How strong is your innovation culture and mindset?",
+                        options: [
+                            { text: "Innovation-driven culture with systematic experimentation", points: 10 },
+                            { text: "Strong innovation culture with regular new initiatives", points: 8 },
+                            { text: "Moderate innovation with some encouragement", points: 6 },
+                            { text: "Limited innovation with risk-averse culture", points: 4 },
+                            { text: "Poor innovation culture with resistance to new ideas", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What percentage of revenue do you invest in R&D?",
+                        options: [
+                            { text: "More than 8% with dedicated AI/AGI research", points: 10 },
+                            { text: "5-8% with significant AI research component", points: 8 },
+                            { text: "3-5% with some AI research activities", points: 6 },
+                            { text: "1-3% with limited AI research", points: 4 },
+                            { text: "Less than 1% with minimal research investment", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How advanced are your research partnerships and collaborations?",
+                        options: [
+                            { text: "Extensive research network with leading institutions", points: 10 },
+                            { text: "Good partnerships with universities and research centers", points: 8 },
+                            { text: "Some research collaborations with mixed results", points: 6 },
+                            { text: "Limited research partnerships", points: 4 },
+                            { text: "No significant research partnerships", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your capability for rapid prototyping and experimentation?",
+                        options: [
+                            { text: "Advanced prototyping with fast iteration cycles", points: 10 },
+                            { text: "Good prototyping capabilities with regular cycles", points: 8 },
+                            { text: "Moderate prototyping with longer development cycles", points: 6 },
+                            { text: "Limited prototyping with slow development", points: 4 },
+                            { text: "Minimal prototyping and experimentation capability", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well do you scout and evaluate emerging technologies?",
+                        options: [
+                            { text: "Systematic technology scouting with early adoption", points: 10 },
+                            { text: "Good technology monitoring with structured evaluation", points: 8 },
+                            { text: "Basic technology awareness with some evaluation", points: 6 },
+                            { text: "Limited technology scouting with ad-hoc evaluation", points: 4 },
+                            { text: "No systematic technology scouting", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your intellectual property development and management?",
+                        options: [
+                            { text: "Strong IP portfolio with active development", points: 10 },
+                            { text: "Good IP management with regular development", points: 8 },
+                            { text: "Basic IP activities with some development", points: 6 },
+                            { text: "Limited IP development and management", points: 4 },
+                            { text: "Minimal IP activity or management", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How effectively do you integrate external innovation?",
+                        options: [
+                            { text: "Excellent external innovation integration", points: 10 },
+                            { text: "Good integration with structured processes", points: 8 },
+                            { text: "Moderate integration with some success", points: 6 },
+                            { text: "Limited external innovation integration", points: 4 },
+                            { text: "Poor external innovation integration", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your approach to innovation measurement and ROI?",
+                        options: [
+                            { text: "Comprehensive innovation metrics with clear ROI", points: 10 },
+                            { text: "Good innovation measurement with ROI tracking", points: 8 },
+                            { text: "Basic innovation metrics with some ROI focus", points: 6 },
+                            { text: "Limited innovation measurement", points: 4 },
+                            { text: "No systematic innovation measurement", points: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Market and Competitive Positioning",
+                questions: [
+                    {
+                        text: "How sustainable are your current competitive advantages in an AGI world?",
+                        options: [
+                            { text: "Strong advantages that will be enhanced by AGI", points: 10 },
+                            { text: "Good advantages with AGI adaptation potential", points: 8 },
+                            { text: "Moderate advantages requiring AGI investment", points: 6 },
+                            { text: "Vulnerable advantages threatened by AGI", points: 4 },
+                            { text: "Weak advantages highly vulnerable to AGI disruption", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well do you understand customer needs evolution with AGI?",
+                        options: [
+                            { text: "Deep understanding with proactive customer research", points: 10 },
+                            { text: "Good customer insights with regular research", points: 8 },
+                            { text: "Basic customer understanding with some research", points: 6 },
+                            { text: "Limited customer insights with minimal research", points: 4 },
+                            { text: "Poor customer understanding and research", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How prepared is your value proposition for AGI-enabled competition?",
+                        options: [
+                            { text: "AGI-enhanced value proposition ready for market", points: 10 },
+                            { text: "Clear AGI value proposition under development", points: 8 },
+                            { text: "Basic AGI considerations in value proposition", points: 6 },
+                            { text: "Limited AGI integration in value proposition", points: 4 },
+                            { text: "No AGI considerations in value proposition", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your competitive intelligence on AGI adoption?",
+                        options: [
+                            { text: "Comprehensive competitor AGI monitoring", points: 10 },
+                            { text: "Good competitive intelligence with AGI focus", points: 8 },
+                            { text: "Basic competitive monitoring with some AGI awareness", points: 6 },
+                            { text: "Limited competitive intelligence", points: 4 },
+                            { text: "No systematic competitive AGI monitoring", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How adaptable is your business model to AGI disruption?",
+                        options: [
+                            { text: "Highly adaptable with multiple AGI scenarios planned", points: 10 },
+                            { text: "Good adaptability with some AGI planning", points: 8 },
+                            { text: "Moderate adaptability with basic AGI consideration", points: 6 },
+                            { text: "Limited adaptability with rigid business model", points: 4 },
+                            { text: "Inflexible business model vulnerable to AGI", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your brand strength and customer loyalty?",
+                        options: [
+                            { text: "Strong brand with high customer loyalty", points: 10 },
+                            { text: "Good brand recognition with solid loyalty", points: 8 },
+                            { text: "Moderate brand strength with average loyalty", points: 6 },
+                            { text: "Weak brand with limited customer loyalty", points: 4 },
+                            { text: "Poor brand recognition and customer loyalty", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well do you identify and enter new markets enabled by AGI?",
+                        options: [
+                            { text: "Proactive market identification with AGI strategy", points: 10 },
+                            { text: "Good market analysis with some AGI opportunities", points: 8 },
+                            { text: "Basic market exploration with limited AGI focus", points: 6 },
+                            { text: "Limited new market identification", points: 4 },
+                            { text: "No systematic new market exploration", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your ecosystem and partnership strategy for AGI era?",
+                        options: [
+                            { text: "Comprehensive AGI ecosystem with strategic partnerships", points: 10 },
+                            { text: "Good partnerships with some AGI focus", points: 8 },
+                            { text: "Basic partnerships with limited AGI integration", points: 6 },
+                            { text: "Limited partnership strategy", points: 4 },
+                            { text: "No systematic partnership strategy for AGI", points: 2 }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Financial and Resource Readiness",
+                questions: [
+                    {
+                        text: "How strong is your financial capacity for AGI investments?",
+                        options: [
+                            { text: "Strong financial position with dedicated AGI investment fund", points: 10 },
+                            { text: "Good financial capacity with planned AGI investments", points: 8 },
+                            { text: "Adequate finances with some AGI investment capability", points: 6 },
+                            { text: "Limited financial capacity for AGI investments", points: 4 },
+                            { text: "Poor financial position limiting AGI investment", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How diversified and resilient are your revenue streams?",
+                        options: [
+                            { text: "Highly diversified with AGI-resistant revenue streams", points: 10 },
+                            { text: "Good diversification with some AGI preparation", points: 8 },
+                            { text: "Moderate diversification with mixed AGI impact", points: 6 },
+                            { text: "Limited diversification vulnerable to AGI", points: 4 },
+                            { text: "Concentrated revenue streams highly vulnerable to AGI", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your approach to measuring AGI investment ROI?",
+                        options: [
+                            { text: "Comprehensive AGI ROI framework with clear metrics", points: 10 },
+                            { text: "Good ROI measurement with AGI considerations", points: 8 },
+                            { text: "Basic ROI tracking with some AGI metrics", points: 6 },
+                            { text: "Limited ROI measurement for AGI investments", points: 4 },
+                            { text: "No systematic AGI investment ROI measurement", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How efficiently do you allocate resources to high-priority initiatives?",
+                        options: [
+                            { text: "Excellent resource allocation with AGI prioritization", points: 10 },
+                            { text: "Good allocation with strategic priority focus", points: 8 },
+                            { text: "Adequate allocation with some strategic focus", points: 6 },
+                            { text: "Limited strategic resource allocation", points: 4 },
+                            { text: "Poor resource allocation without strategic focus", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your access to external funding for AGI initiatives?",
+                        options: [
+                            { text: "Excellent access with investor AGI enthusiasm", points: 10 },
+                            { text: "Good access with some investor interest in AGI", points: 8 },
+                            { text: "Moderate access with mixed investor sentiment", points: 6 },
+                            { text: "Limited access with investor skepticism", points: 4 },
+                            { text: "Poor access to external funding", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How prepared are you financially for AGI transition costs?",
+                        options: [
+                            { text: "Comprehensive financial planning for AGI transition", points: 10 },
+                            { text: "Good financial preparation with transition planning", points: 8 },
+                            { text: "Basic financial planning with some AGI consideration", points: 6 },
+                            { text: "Limited financial planning for AGI transition", points: 4 },
+                            { text: "No financial planning for AGI transition costs", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "What is your strategy for talent acquisition and retention costs?",
+                        options: [
+                            { text: "Comprehensive talent strategy with competitive compensation", points: 10 },
+                            { text: "Good talent planning with market-rate compensation", points: 8 },
+                            { text: "Basic talent strategy with standard compensation", points: 6 },
+                            { text: "Limited talent planning with below-market compensation", points: 4 },
+                            { text: "No systematic talent strategy or competitive compensation", points: 2 }
+                        ]
+                    },
+                    {
+                        text: "How well do you manage technology infrastructure investment costs?",
+                        options: [
+                            { text: "Excellent infrastructure cost management with AGI planning", points: 10 },
+                            { text: "Good cost management with strategic infrastructure investment", points: 8 },
+                            { text: "Adequate cost management with some strategic planning", points: 6 },
+                            { text: "Limited cost management with reactive infrastructure spending", points: 4 },
+                            { text: "Poor infrastructure cost management", points: 2 }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let currentDimension = 0;
+        let currentQuestion = 0;
+        let scores = new Array(8).fill(0);
+        let answers = [];
+        let organizationType = null;
+        let organizationConfig = {
+            enterprise: {
+                name: "Enterprise",
+                description: "large organization",
+                benchmarks: { unprepared: 160, aware: 320, developing: 480, advanced: 640 },
+                averageScore: 370,
+                focusAreas: ["governance", "scale", "compliance", "transformation"]
+            },
+            small_business: {
+                name: "Small Business", 
+                description: "small to medium business",
+                benchmarks: { unprepared: 120, aware: 240, developing: 360, advanced: 480 },
+                averageScore: 275,
+                focusAreas: ["agility", "efficiency", "growth", "competition"]
+            },
+            consumer: {
+                name: "Individual/Professional",
+                description: "individual or consultant", 
+                benchmarks: { unprepared: 80, aware: 160, developing: 240, advanced: 320 },
+                averageScore: 180,
+                focusAreas: ["skills", "career", "tools", "opportunities"]
+            }
+        };
+
+        function selectOrganizationType(type) {
+            // Remove previous selection
+            document.querySelectorAll('.org-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select current option
+            event.target.closest('.org-option').classList.add('selected');
+            organizationType = type;
+            
+            // Update CTA
+            const cta = document.getElementById('startCTA');
+            const description = document.getElementById('ctaDescription');
+            const config = organizationConfig[type];
+            
+            description.textContent = `Evaluate your ${config.description}'s readiness across 8 critical dimensions and receive personalized recommendations.`;
+            cta.style.display = 'block';
+            cta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function startAssessment() {
+            if (!organizationType) {
+                alert('Please select your organization type first.');
+                return;
+            }
+            document.getElementById('intro').style.display = 'none';
+            showCurrentQuestion();
+            updateProgress();
+        }
+
+        function showCurrentQuestion() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            const dimension = dimensions[currentDimension];
+            const question = dimension.questions[currentQuestion];
+
+            const questionSection = document.createElement('div');
+            questionSection.className = 'question-section active';
+
+            questionSection.innerHTML = `
+                <div class="dimension-header">
+                    <h3>${dimension.name}</h3>
+                    <p>Question ${currentQuestion + 1} of ${dimension.questions.length}</p>
+                </div>
+                <div class="question">
+                    <h4>${question.text}</h4>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option" onclick="selectOption(${index})">
+                                <input type="radio" name="q${currentDimension}_${currentQuestion}" value="${index}" id="opt${index}">
+                                <label for="opt${index}">${option.text}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="navigation">
+                    <button class="btn btn-secondary" onclick="previousQuestion()" ${currentDimension === 0 && currentQuestion === 0 ? 'style="visibility: hidden;"' : ''}>
+                        Previous
+                    </button>
+                    <button class="btn" onclick="nextQuestion()" id="nextBtn" disabled>
+                        ${currentDimension === dimensions.length - 1 && currentQuestion === dimensions[currentDimension].questions.length - 1 ? 'Finish' : 'Next'}
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(questionSection);
+        }
+
+        function selectOption(optionIndex) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => option.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            const radio = document.getElementById(`opt${optionIndex}`);
+            radio.checked = true;
+            
+            document.getElementById('nextBtn').disabled = false;
+            
+            // Store the answer
+            const answerKey = `${currentDimension}_${currentQuestion}`;
+            answers[answerKey] = optionIndex;
+        }
+
+        function nextQuestion() {
+            // Score the current question
+            const selectedOption = document.querySelector('input[type="radio"]:checked');
+            if (!selectedOption) return;
+            
+            const optionIndex = parseInt(selectedOption.value);
+            const dimension = dimensions[currentDimension];
+            const question = dimension.questions[currentQuestion];
+            scores[currentDimension] += question.options[optionIndex].points;
+
+            // Move to next question
+            currentQuestion++;
+            if (currentQuestion >= dimensions[currentDimension].questions.length) {
+                currentDimension++;
+                currentQuestion = 0;
+            }
+
+            updateProgress();
+
+            // Check if assessment is complete
+            if (currentDimension >= dimensions.length) {
+                showResults();
+                return;
+            }
+
+            showCurrentQuestion();
+        }
+
+        function previousQuestion() {
+            currentQuestion--;
+            if (currentQuestion < 0) {
+                currentDimension--;
+                if (currentDimension >= 0) {
+                    currentQuestion = dimensions[currentDimension].questions.length - 1;
+                }
+            }
+
+            if (currentDimension >= 0) {
+                updateProgress();
+                showCurrentQuestion();
+                
+                // Restore previous selection
+                const answerKey = `${currentDimension}_${currentQuestion}`;
+                if (answers[answerKey] !== undefined) {
+                    const optionIndex = answers[answerKey];
+                    document.getElementById(`opt${optionIndex}`).checked = true;
+                    document.querySelectorAll('.option')[optionIndex].classList.add('selected');
+                    document.getElementById('nextBtn').disabled = false;
+                }
+            }
+        }
+
+        function updateProgress() {
+            const totalQuestions = dimensions.reduce((sum, dim) => sum + dim.questions.length, 0);
+            const completedQuestions = currentDimension * 8 + currentQuestion;
+            const percentage = (completedQuestions / totalQuestions) * 100;
+            
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${completedQuestions} of ${totalQuestions} questions completed`;
+        }
+
+        function showResults() {
+            document.getElementById('questions-container').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+            
+            const totalScore = scores.reduce((sum, score) => sum + score, 0);
+            const config = organizationConfig[organizationType];
+            
+            // Determine readiness level based on organization type
+            let level, levelClass, levelDescription;
+            if (totalScore >= config.benchmarks.advanced) {
+                level = "AGI-Ready";
+                levelClass = "level-ready";
+                levelDescription = `Your ${config.description} demonstrates comprehensive AGI preparation with industry-leading capabilities. You're positioned to lead in the AGI transition.`;
+            } else if (totalScore >= config.benchmarks.developing) {
+                level = "Advanced";
+                levelClass = "level-advanced";
+                levelDescription = `Your ${config.description} shows strong AGI readiness with minor gaps to address. You're well-positioned for the AGI transition with some strategic improvements needed.`;
+            } else if (totalScore >= config.benchmarks.aware) {
+                level = "Developing";
+                levelClass = "level-developing";
+                levelDescription = `Your ${config.description} has moderate AGI preparation with significant development needed. Systematic investment in readiness capabilities is essential.`;
+            } else if (totalScore >= config.benchmarks.unprepared) {
+                level = "Aware";
+                levelClass = "level-aware";
+                levelDescription = `Your ${config.description} shows basic AGI awareness with substantial preparation required. Immediate action is needed to build foundational capabilities.`;
+            } else {
+                level = "Unprepared";
+                levelClass = "level-unprepared";
+                levelDescription = `Your ${config.description} has minimal AGI readiness requiring comprehensive transformation. Urgent strategic intervention is necessary.`;
+            }
+
+            // Show score comparison to average
+            const percentileText = totalScore > config.averageScore ? 
+                `${Math.round(((totalScore - config.averageScore) / config.averageScore) * 100)}% above average` :
+                `${Math.round(((config.averageScore - totalScore) / config.averageScore) * 100)}% below average`;
+
+            document.getElementById('totalScore').textContent = totalScore;
+            const readinessLevelElement = document.getElementById('readinessLevel');
+            readinessLevelElement.className = `readiness-level ${levelClass}`;
+            readinessLevelElement.innerHTML = `
+                <h3>${level} (${totalScore}/800)</h3>
+                <p>${levelDescription}</p>
+                <p><strong>${config.name} Average: ${config.averageScore} points</strong> • You scored ${percentileText}</p>
+            `;
+
+            // Show dimension scores
+            const dimensionScoresContainer = document.getElementById('dimensionScores');
+            dimensionScoresContainer.innerHTML = '';
+            
+            dimensions.forEach((dimension, index) => {
+                const maxScore = dimension.questions.length * 10;
+                const percentage = (scores[index] / maxScore) * 100;
+                
+                const dimensionDiv = document.createElement('div');
+                dimensionDiv.className = 'dimension-score';
+                dimensionDiv.innerHTML = `
+                    <h4>${dimension.name}</h4>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div>${scores[index]}/${maxScore} points (${Math.round(percentage)}%)</div>
+                `;
+                dimensionScoresContainer.appendChild(dimensionDiv);
+            });
+
+            // Generate recommendations
+            const recommendations = generateRecommendations(totalScore, scores, organizationType);
+            document.getElementById('recommendations').innerHTML = `
+                <h3>Your Strategic Priorities for ${config.name}</h3>
+                <ul>
+                    ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function generateRecommendations(totalScore, scores, orgType) {
+            const recommendations = [];
+            const config = organizationConfig[orgType];
+            
+            if (orgType === 'enterprise') {
+                if (totalScore < config.benchmarks.aware) {
+                    recommendations.push("Establish executive AGI steering committee with dedicated budget allocation");
+                    recommendations.push("Begin enterprise-wide AI literacy program with role-specific training tracks");
+                    recommendations.push("Conduct comprehensive IT infrastructure assessment for AGI scalability");
+                    recommendations.push("Develop comprehensive AI governance framework with compliance protocols");
+                    recommendations.push("Launch cross-functional AI pilot program in non-critical business areas");
+                } else if (totalScore < config.benchmarks.developing) {
+                    recommendations.push("Expand AI implementation across core business functions with measured ROI");
+                    recommendations.push("Implement enterprise change management program for workforce transformation");
+                    recommendations.push("Enhance cybersecurity and risk management for AI systems at scale");
+                    recommendations.push("Develop strategic partnerships with leading AGI technology providers");
+                    recommendations.push("Create internal innovation labs for AGI experimentation and R&D");
+                } else if (totalScore < config.benchmarks.advanced) {
+                    recommendations.push("Optimize AI operations for enterprise efficiency and competitive advantage");
+                    recommendations.push("Develop comprehensive AGI transition roadmap with scenario planning");
+                    recommendations.push("Build industry thought leadership and influence AGI standards development");
+                    recommendations.push("Create AGI-enabled business model innovations and new revenue streams");
+                    recommendations.push("Establish enterprise-wide AI centers of excellence");
+                } else {
+                    recommendations.push("Lead industry transformation through AGI innovation and best practices");
+                    recommendations.push("Develop AGI platform strategies and ecosystem partnerships");
+                    recommendations.push("Influence policy and regulatory development for responsible AGI");
+                    recommendations.push("Create post-AGI competitive strategies and market leadership");
+                    recommendations.push("Establish AGI research partnerships with leading institutions");
+                }
+            } else if (orgType === 'small_business') {
+                if (totalScore < config.benchmarks.aware) {
+                    recommendations.push("Start with AI literacy for leadership team and key staff members");
+                    recommendations.push("Identify 1-2 high-impact AI use cases for immediate implementation");
+                    recommendations.push("Assess cloud infrastructure readiness and plan strategic upgrades");
+                    recommendations.push("Establish basic AI governance policies and vendor evaluation criteria");
+                    recommendations.push("Join SMB-focused AI communities and training programs");
+                } else if (totalScore < config.benchmarks.developing) {
+                    recommendations.push("Scale successful AI pilots across multiple business functions");
+                    recommendations.push("Invest in staff cross-training for AI-human collaboration");
+                    recommendations.push("Develop partnerships with AI service providers for expertise gaps");
+                    recommendations.push("Create competitive differentiation through AI-enhanced customer service");
+                    recommendations.push("Establish lean innovation processes for rapid AI adoption");
+                } else if (totalScore < config.benchmarks.advanced) {
+                    recommendations.push("Optimize AI implementations for maximum operational efficiency");
+                    recommendations.push("Develop niche market leadership through specialized AI capabilities");
+                    recommendations.push("Build strategic alliances with complementary AGI-ready businesses");
+                    recommendations.push("Create AI-first business processes and competitive advantages");
+                    recommendations.push("Establish thought leadership in your industry vertical");
+                } else {
+                    recommendations.push("Maintain competitive edge through continuous AI innovation");
+                    recommendations.push("Develop AI consulting or services as new revenue stream");
+                    recommendations.push("Create industry partnerships and collaborative AGI initiatives");
+                    recommendations.push("Build scalable AI-driven business model for rapid growth");
+                    recommendations.push("Share expertise through industry speaking and content creation");
+                }
+            } else { // consumer/individual
+                if (totalScore < config.benchmarks.aware) {
+                    recommendations.push("Begin comprehensive AI literacy education and certification programs");
+                    recommendations.push("Identify how AI tools can enhance your current work and productivity");
+                    recommendations.push("Develop personal technology setup for AI tool integration");
+                    recommendations.push("Create learning plan for AGI-relevant skills in your field");
+                    recommendations.push("Join professional AI communities and networking groups");
+                } else if (totalScore < config.benchmarks.developing) {
+                    recommendations.push("Advance to specialized AI skills relevant to your career path");
+                    recommendations.push("Build portfolio of AI-enhanced work and case studies");
+                    recommendations.push("Develop expertise in human-AI collaboration methodologies");
+                    recommendations.push("Create personal brand around AI expertise in your domain");
+                    recommendations.push("Explore new career opportunities in AGI-enabled fields");
+                } else if (totalScore < config.benchmarks.advanced) {
+                    recommendations.push("Position yourself as AI expert and thought leader in your field");
+                    recommendations.push("Develop consulting or training services around AI expertise");
+                    recommendations.push("Build network of AI professionals and potential collaborators");
+                    recommendations.push("Create innovative solutions combining AI with domain expertise");
+                    recommendations.push("Prepare for advanced AGI capabilities and career opportunities");
+                } else {
+                    recommendations.push("Lead professional community in AGI adoption and best practices");
+                    recommendations.push("Develop training programs and content for other professionals");
+                    recommendations.push("Create innovative AGI applications in your field of expertise");
+                    recommendations.push("Build personal platform for AGI thought leadership");
+                    recommendations.push("Explore entrepreneurial opportunities in AGI-enabled markets");
+                }
+            }
+
+            // Add specific dimension recommendations based on lowest scores
+            const dimensionScoresSorted = scores.map((score, index) => ({
+                score,
+                index,
+                name: dimensions[index].name
+            })).sort((a, b) => a.score - b.score);
+
+            const lowestDimension = dimensionScoresSorted[0];
+            const dimensionThreshold = orgType === 'enterprise' ? 60 : orgType === 'small_business' ? 50 : 40;
+            
+            if (lowestDimension.score < dimensionThreshold) {
+                const priorityActions = {
+                    enterprise: {
+                        0: "Priority: Develop comprehensive executive AGI strategy and board-level oversight",
+                        1: "Priority: Invest in enterprise-grade AI infrastructure and data architecture", 
+                        2: "Priority: Launch enterprise-wide AI training and change management program",
+                        3: "Priority: Establish enterprise AI governance and comprehensive risk framework",
+                        4: "Priority: Enhance organizational agility and transformation capabilities",
+                        5: "Priority: Increase R&D investment and innovation partnership ecosystem",
+                        6: "Priority: Strengthen market position and develop AGI competitive strategy",
+                        7: "Priority: Secure strategic funding and optimize resource allocation for AGI"
+                    },
+                    small_business: {
+                        0: "Priority: Develop clear AGI strategy and leadership commitment",
+                        1: "Priority: Upgrade core technology infrastructure and AI capabilities",
+                        2: "Priority: Invest in staff AI training and skill development",
+                        3: "Priority: Establish lean AI governance and risk management",
+                        4: "Priority: Improve business agility and adaptation capabilities",
+                        5: "Priority: Focus innovation efforts on high-impact AI applications",
+                        6: "Priority: Strengthen competitive positioning through AI differentiation",
+                        7: "Priority: Optimize financial planning and resource allocation"
+                    },
+                    consumer: {
+                        0: "Priority: Develop personal AGI strategy and commitment to learning",
+                        1: "Priority: Upgrade personal technology setup and AI tool proficiency",
+                        2: "Priority: Invest in advanced AI skills and professional development",
+                        3: "Priority: Understand AI ethics and develop responsible usage practices",
+                        4: "Priority: Enhance personal adaptability and continuous learning habits",
+                        5: "Priority: Focus on innovative applications of AI in your domain",
+                        6: "Priority: Build professional network and market positioning",
+                        7: "Priority: Plan financial investment in skills and tools"
+                    }
+                };
+                
+                if (priorityActions[orgType][lowestDimension.index]) {
+                    recommendations.push(priorityActions[orgType][lowestDimension.index]);
+                }
+            }
+
+            return recommendations;
+        }
+    </script>
+</body>
+</html>
