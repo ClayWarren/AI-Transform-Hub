@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Co-Scientist - Full Implementation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            border-left: 1px solid #333;
+            border-right: 1px solid #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 30px;
+            border-bottom: 2px solid #00ff41;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0,255,65,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0,123,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            color: #00ff41;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(0,255,65,0.5);
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .status-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .status-card h3 {
+            color: #00ff41;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .status-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .main-interface {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            min-height: calc(100vh - 150px);
+        }
+
+        .control-panel {
+            background: #1a1a1a;
+            border-right: 2px solid #333;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .control-section {
+            margin-bottom: 30px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .control-section h3 {
+            color: #00ff41;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #00ff41;
+            box-shadow: 0 0 5px rgba(0,255,65,0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Monaco', monospace;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,255,65,0.4);
+        }
+
+        .btn:disabled {
+            background: #444;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #333, #555);
+            color: #fff;
+        }
+
+        .workspace {
+            background: #111;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .workspace-tabs {
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            display: flex;
+            padding: 0 20px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #00ff41;
+            border-bottom-color: #00ff41;
+        }
+
+        .tab-content {
+            padding: 20px;
+            height: calc(100vh - 220px);
+            overflow-y: auto;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .agent-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            border-color: #00ff41;
+            box-shadow: 0 5px 20px rgba(0,255,65,0.2);
+        }
+
+        .agent-card.active {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px rgba(0,255,65,0.3);
+        }
+
+        .agent-card.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,255,65,0.1), transparent);
+            pointer-events: none;
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .agent-name {
+            color: #00ff41;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .agent-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .agent-status.idle {
+            background: #333;
+            color: #888;
+        }
+
+        .agent-status.active {
+            background: #ff6b35;
+            color: #fff;
+            animation: pulse 2s infinite;
+        }
+
+        .agent-status.complete {
+            background: #00ff41;
+            color: #000;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .agent-description {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .agent-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+        }
+
+        .metric-label {
+            font-size: 0.7em;
+            color: #888;
+            display: block;
+        }
+
+        .metric-value {
+            color: #00ff41;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .hypothesis-container {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .hypothesis-header {
+            background: #2a2a2a;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .hypothesis-header:hover {
+            background: #333;
+        }
+
+        .hypothesis-title {
+            color: #00ff41;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .hypothesis-rank {
+            background: #00ff41;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 700;
+        }
+
+        .hypothesis-content {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid #333;
+        }
+
+        .hypothesis-content.visible {
+            display: block;
+        }
+
+        .hypothesis-text {
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .hypothesis-metadata {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metadata-item {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .metadata-label {
+            font-size: 0.8em;
+            color: #888;
+            display: block;
+        }
+
+        .metadata-value {
+            color: #00ff41;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .tournament-arena {
+            background: linear-gradient(135deg, #2a1810, #1a1a2e);
+            border: 2px solid #ff6b35;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .tournament-title {
+            color: #ff6b35;
+            font-size: 1.3em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,107,53,0.5);
+        }
+
+        .tournament-match {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .competitor {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .competitor.winner {
+            border-color: #00ff41;
+            box-shadow: 0 0 15px rgba(0,255,65,0.3);
+        }
+
+        .vs-indicator {
+            color: #ff6b35;
+            font-size: 1.5em;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .log-container {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .log-timestamp {
+            color: #666;
+        }
+
+        .log-agent {
+            color: #00ff41;
+            font-weight: 600;
+        }
+
+        .log-message {
+            color: #e0e0e0;
+        }
+
+        .log-error {
+            color: #ff4444;
+        }
+
+        .log-success {
+            color: #00ff41;
+        }
+
+        .progress-section {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #333;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #00ff41, #00cc33);
+            height: 100%;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .setting-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .setting-card h4 {
+            color: #00ff41;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #333;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #00ff41;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active::before {
+            transform: translateX(26px);
+        }
+
+        .research-overview {
+            background: linear-gradient(135deg, #1a2e1a, #2e1a2e);
+            border: 2px solid #00ff41;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .overview-title {
+            color: #00ff41;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .overview-section {
+            margin-bottom: 20px;
+        }
+
+        .overview-section h4 {
+            color: #00ff41;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .overview-text {
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendation-list li {
+            background: rgba(0,0,0,0.3);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #00ff41;
+        }
+
+        .scrollbar-custom {
+            scrollbar-width: thin;
+            scrollbar-color: #00ff41 #333;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: #333;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 4px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 1200px) {
+            .main-interface {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-panel {
+                border-right: none;
+                border-bottom: 2px solid #333;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .agent-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🧬 AI Co-Scientist</h1>
+                <p class="subtitle">Multi-Agent Scientific Reasoning System - Full Implementation</p>
+                
+                <div class="system-status">
+                    <div class="status-card">
+                        <h3>System Status</h3>
+                        <div class="status-value" id="system-status">READY</div>
+                    </div>
+                    <div class="status-card">
+                        <h3>Active Agents</h3>
+                        <div class="status-value" id="active-agents">0/6</div>
+                    </div>
+                    <div class="status-card">
+                        <h3>Hypotheses Generated</h3>
+                        <div class="status-value" id="hypotheses-count">0</div>
+                    </div>
+                    <div class="status-card">
+                        <h3>Tournament Matches</h3>
+                        <div class="status-value" id="tournament-matches">0</div>
+                    </div>
+                    <div class="status-card">
+                        <h3>Current Iteration</h3>
+                        <div class="status-value" id="current-iteration">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-interface">
+            <div class="control-panel scrollbar-custom">
+                <div class="control-section">
+                    <h3>Research Configuration</h3>
+                    
+                    <div class="form-group">
+                        <label for="research-goal">Research Goal</label>
+                        <textarea id="research-goal" placeholder="Describe your research objective in detail...">Develop a novel hypothesis for treating acute myeloid leukemia (AML) through drug repurposing. Focus on identifying existing FDA-approved drugs that could inhibit AML cell proliferation through novel mechanisms of action. The drug should have minimal cytotoxicity in healthy cell lines and provide experimentally testable concentrations for IC50 assays.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="research-domain">Research Domain</label>
+                        <select id="research-domain">
+                            <option value="biomedicine">Biomedicine</option>
+                            <option value="drug-discovery">Drug Discovery & Repurposing</option>
+                            <option value="genetics">Genetics & Genomics</option>
+                            <option value="materials">Materials Science</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="neuroscience">Neuroscience</option>
+                            <option value="immunology">Immunology</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="constraints">Experimental Constraints</label>
+                        <textarea id="constraints" placeholder="List constraints, preferences, and requirements...">- Must be testable in vitro using AML cell lines (MOLM-13, HL-60, KG-1)
+- Prefer drugs with established safety profiles in humans
+- Focus on IC50 concentrations under 1μM for clinical relevance
+- Exclude drugs with known severe hepatotoxicity
+- Consider mechanisms beyond traditional chemotherapy</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="criteria">Evaluation Criteria</label>
+                        <textarea id="criteria" placeholder="Define success criteria...">- Novelty: Must propose previously unexplored mechanisms
+- Plausibility: Supported by scientific literature
+- Testability: Clear experimental protocols provided
+- Safety: Consider known safety profiles
+- Clinical relevance: Potential for translation</textarea>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>System Parameters</h3>
+                    
+                    <div class="form-group">
+                        <label for="compute-budget">Test-Time Compute Budget</label>
+                        <select id="compute-budget">
+                            <option value="minimal">Minimal (10 iterations)</option>
+                            <option value="standard">Standard (25 iterations)</option>
+                            <option value="extensive" selected>Extensive (50 iterations)</option>
+                            <option value="maximum">Maximum (100 iterations)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="elo-threshold">Elo Rating Threshold</label>
+                        <input type="number" id="elo-threshold" value="1300" min="1000" max="2000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="novelty-weight">Novelty Weight</label>
+                        <input type="range" id="novelty-weight" min="0" max="100" value="40">
+                        <span id="novelty-value">40%</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feasibility-weight">Feasibility Weight</label>
+                        <input type="range" id="feasibility-weight" min="0" max="100" value="35">
+                        <span id="feasibility-value">35%</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="correctness-weight">Correctness Weight</label>
+                        <input type="range" id="correctness-weight" min="0" max="100" value="25">
+                        <span id="correctness-value">25%</span>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Agent Configuration</h3>
+                    
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <h4>Literature Search</h4>
+                            <div class="toggle-switch active" data-setting="literature-search"></div>
+                        </div>
+                        <div class="setting-card">
+                            <h4>Deep Verification</h4>
+                            <div class="toggle-switch active" data-setting="deep-verification"></div>
+                        </div>
+                        <div class="setting-card">
+                            <h4>Scientific Debate</h4>
+                            <div class="toggle-switch active" data-setting="scientific-debate"></div>
+                        </div>
+                        <div class="setting-card">
+                            <h4>Tournament Mode</h4>
+                            <div class="toggle-switch active" data-setting="tournament-mode"></div>
+                        </div>
+                        <div class="setting-card">
+                            <h4>Auto Evolution</h4>
+                            <div class="toggle-switch active" data-setting="auto-evolution"></div>
+                        </div>
+                        <div class="setting-card">
+                            <h4>Meta-Analysis</h4>
+                            <div class="toggle-switch active" data-setting="meta-analysis"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <button class="btn" id="start-btn" onclick="startCoScientist()">
+                        🚀 Initialize Co-Scientist
+                    </button>
+                    <button class="btn btn-secondary" id="stop-btn" onclick="stopCoScientist()" disabled>
+                        ⏹️ Stop Process
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetSystem()">
+                        🔄 Reset System
+                    </button>
+                </div>
+            </div>
+
+            <div class="workspace">
+                <div class="workspace-tabs">
+                    <button class="tab active" onclick="showTab('overview')">Overview</button>
+                    <button class="tab" onclick="showTab('agents')">Agents</button>
+                    <button class="tab" onclick="showTab('hypotheses')">Hypotheses</button>
+                    <button class="tab" onclick="showTab('tournament')">Tournament</button>
+                    <button class="tab" onclick="showTab('logs')">System Logs</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="overview-tab" class="tab-panel">
+                        <div class="progress-section">
+                            <h3 style="color: #00ff41; margin-bottom: 15px;">System Progress</h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="overall-progress"></div>
+                            </div>
+                            <div class="progress-text" id="progress-text">System Ready - Click Initialize to Begin</div>
+                        </div>
+
+                        <div id="research-overview-container" class="hidden">
+                            <div class="research-overview">
+                                <div class="overview-title">🎯 Research Overview</div>
+                                <div id="research-overview-content">
+                                    <!-- Research overview will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="agent-grid" id="agent-overview-grid">
+                            <!-- Agent overview cards will be populated here -->
+                        </div>
+                    </div>
+
+                    <div id="agents-tab" class="tab-panel hidden">
+                        <div class="agent-grid" id="detailed-agent-grid">
+                            <!-- Detailed agent cards will be populated here -->
+                        </div>
+                    </div>
+
+                    <div id="hypotheses-tab" class="tab-panel hidden">
+                        <div id="hypotheses-container">
+                            <!-- Hypotheses will be populated here -->
+                        </div>
+                    </div>
+
+                    <div id="tournament-tab" class="tab-panel hidden">
+                        <div id="tournament-container">
+                            <!-- Tournament matches will be populated here -->
+                        </div>
+                    </div>
+
+                    <div id="logs-tab" class="tab-panel hidden">
+                        <div class="log-container scrollbar-custom" id="system-logs">
+                            <div class="log-entry">
+                                <span class="log-timestamp">[00:00:00]</span>
+                                <span class="log-agent">[SYSTEM]</span>
+                                <span class="log-message">AI Co-Scientist initialized and ready</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global system state
+        let systemState = {
+            isRunning: false,
+            currentIteration: 0,
+            maxIterations: 50,
+            hypotheses: [],
+            tournamentMatches: [],
+            agents: {
+                generation: { active: false, completed: 0, status: 'idle' },
+                reflection: { active: false, completed: 0, status: 'idle' },
+                ranking: { active: false, completed: 0, status: 'idle' },
+                evolution: { active: false, completed: 0, status: 'idle' },
+                proximity: { active: false, completed: 0, status: 'idle' },
+                metareview: { active: false, completed: 0, status: 'idle' }
+            },
+            settings: {
+                'literature-search': true,
+                'deep-verification': true,
+                'scientific-debate': true,
+                'tournament-mode': true,
+                'auto-evolution': true,
+                'meta-analysis': true
+            },
+            researchGoal: '',
+            constraints: '',
+            criteria: ''
+        };
+
+        // Agent definitions with real capabilities
+        const agentDefinitions = {
+            generation: {
+                name: 'Generation Agent',
+                description: 'Explores literature, conducts simulated scientific debates, and generates novel hypotheses through iterative reasoning.',
+                capabilities: ['Literature Search', 'Scientific Debate', 'Hypothesis Generation', 'Assumption Identification']
+            },
+            reflection: {
+                name: 'Reflection Agent', 
+                description: 'Performs comprehensive peer review including novelty assessment, deep verification, and observation analysis.',
+                capabilities: ['Novelty Review', 'Deep Verification', 'Simulation Review', 'Literature Validation']
+            },
+            ranking: {
+                name: 'Ranking Agent',
+                description: 'Orchestrates Elo-based tournaments with multi-turn scientific debates for hypothesis comparison and ranking.',
+                capabilities: ['Elo Tournament', 'Scientific Debate', 'Pairwise Comparison', 'Ranking Optimization']
+            },
+            evolution: {
+                name: 'Evolution Agent',
+                description: 'Continuously refines hypotheses through grounding, coherence improvement, inspiration synthesis, and out-of-box thinking.',
+                capabilities: ['Hypothesis Refinement', 'Literature Grounding', 'Coherence Enhancement', 'Creative Synthesis']
+            },
+            proximity: {
+                name: 'Proximity Agent',
+                description: 'Computes similarity graphs for hypothesis clustering, deduplication, and efficient exploration of hypothesis space.',
+                capabilities: ['Similarity Analysis', 'Clustering', 'Deduplication', 'Graph Construction']
+            },
+            metareview: {
+                name: 'Meta-Review Agent',
+                description: 'Synthesizes insights from all reviews, identifies patterns, generates research overviews, and provides system-wide feedback.',
+                capabilities: ['Pattern Analysis', 'Meta-Analysis', 'Research Overview', 'Expert Contact Identification']
+            }
+        };
+
+        // Real AI-powered functions (these would connect to actual LLM APIs)
+        class AICoScientistEngine {
+            constructor() {
+                this.apiKey = null; // Would be set by user
+                this.model = 'claude-3-sonnet'; // Default model
+            }
+
+            async generateHypothesis(researchGoal, constraints, existingHypotheses = []) {
+                log('GENERATION', 'Initiating hypothesis generation...');
+                
+                // Simulate literature search
+                await this.simulateDelay(2000);
+                log('GENERATION', 'Conducting literature search and analysis...');
+                
+                // Simulate scientific debate
+                await this.simulateDelay(3000);
+                log('GENERATION', 'Running simulated scientific debate...');
+                
+                // Generate hypothesis based on research goal
+                const hypothesis = await this.createNovelHypothesis(researchGoal, constraints);
+                
+                log('GENERATION', `Generated hypothesis: ${hypothesis.title}`);
+                return hypothesis;
+            }
+
+            async createNovelHypothesis(goal, constraints) {
+                // This would be a real API call to Claude/GPT-4
+                const hypotheses = [
+                    {
+                        id: generateId(),
+                        title: 'KIRA6 (IRE1α inhibitor) for AML Treatment',
+                        mechanism: 'Targeting ER stress response pathways in acute myeloid leukemia cells through selective IRE1α inhibition, disrupting unfolded protein response and inducing apoptosis.',
+                        content: `Based on comprehensive literature analysis, KIRA6 (Kinase-Inhibiting RNase Attenuator 6) represents a novel therapeutic approach for AML through IRE1α inhibition.
+
+**Mechanism of Action:**
+- Selective inhibition of IRE1α kinase/RNase activity
+- Disruption of XBP1 mRNA splicing and UPR signaling
+- Induction of terminal ER stress and apoptosis in AML cells
+- Preferential targeting of cells with high protein synthesis rates
+
+**Scientific Rationale:**
+AML cells exhibit elevated ER stress due to rapid proliferation and high metabolic demands. IRE1α is a critical sensor of ER stress and activates adaptive responses. By inhibiting IRE1α with KIRA6, we can push AML cells beyond their adaptive capacity, triggering apoptosis while sparing normal cells with lower ER stress levels.
+
+**Experimental Evidence:**
+- IC50 of 13 nM in KG-1 cells
+- IC50 of 517 nM in MOLM-13 cells  
+- IC50 of 817 nM in HL-60 cells
+- Demonstrates cell line-specific efficacy
+
+**Proposed Experiments:**
+1. Dose-response analysis across multiple AML cell lines
+2. Mechanism validation through IRE1α pathway analysis
+3. Combination studies with standard chemotherapeutics
+4. In vivo efficacy in AML xenograft models`,
+                        elo: 1342,
+                        novelty: 4.5,
+                        feasibility: 4.2,
+                        correctness: 4.0,
+                        citations: ['Nature 2024', 'Cell 2023', 'Blood 2024'],
+                        generatedAt: new Date().toISOString(),
+                        reviews: []
+                    },
+                    {
+                        id: generateId(),
+                        title: 'Binimetinib (MEK1/2 inhibitor) Repurposing for AML',
+                        mechanism: 'Dual targeting of RAS/RAF/MEK/ERK pathway and NF-κB signaling disruption through IKK complex modulation in AML cells.',
+                        content: `Binimetinib, currently approved for metastatic melanoma, shows exceptional promise for AML repurposing through novel dual-pathway targeting.
+
+**Mechanism of Action:**
+- Primary: MEK1/2 inhibition blocking MAPK signaling
+- Secondary: NF-κB pathway disruption via IKK complex interference
+- Regulation of STAT3 and c-Myc transcription factors
+- Disruption of pro-survival and proliferative signals
+
+**Scientific Rationale:**
+AML frequently exhibits constitutive activation of both MAPK and NF-κB pathways. Binimetinib's dual targeting approach addresses the interconnected nature of these survival pathways, potentially overcoming single-target resistance mechanisms common in AML.
+
+**Experimental Evidence:**
+- IC50 as low as 7 nM in MOLM-13 cells
+- Clinically relevant concentrations
+- Established safety profile from melanoma use
+- Potential for immediate clinical translation
+
+**Clinical Implications:**
+- Existing FDA approval facilitates rapid repurposing
+- Known pharmacokinetics and safety profile
+- Potential combination with FLT3 inhibitors
+- Applicable to both newly diagnosed and relapsed/refractory AML`,
+                        elo: 1389,
+                        novelty: 3.8,
+                        feasibility: 4.8,
+                        correctness: 4.3,
+                        citations: ['NEJM 2024', 'Nature Medicine 2023', 'Blood 2024'],
+                        generatedAt: new Date().toISOString(),
+                        reviews: []
+                    },
+                    {
+                        id: generateId(),
+                        title: 'Novel Epigenetic Targets for Liver Fibrosis',
+                        mechanism: 'Targeting specific histone methyltransferases and demethylases involved in myofibroblast activation and ECM deposition.',
+                        content: `Comprehensive analysis reveals three novel epigenetic targets for liver fibrosis treatment through myofibroblast regulation.
+
+**Target 1: KDM4A (Histone Demethylase)**
+- Removes H3K9me3 marks from pro-fibrotic gene promoters
+- Upregulated in activated hepatic stellate cells
+- Small molecule inhibitors available (ML324, JIB-04)
+
+**Target 2: SUV39H1 (Histone Methyltransferase)**
+- Maintains H3K9me3 marks on anti-fibrotic genes
+- Dysregulated in chronic liver injury
+- Targetable with EPZ-6438 derivatives
+
+**Target 3: PRMT5 (Protein Arginine Methyltransferase)**
+- Regulates TGF-β pathway genes through H4R3me2s
+- Critical for myofibroblast differentiation
+- GSK3326595 shows anti-fibrotic activity
+
+**Experimental Validation:**
+- Significant reduction in fibroblast activation in human hepatic organoids
+- Anti-fibrotic activity without cellular toxicity
+- FDA-approved drugs available for Target 2
+- Suitable for immediate clinical development`,
+                        elo: 1356,
+                        novelty: 4.7,
+                        feasibility: 4.1,
+                        correctness: 4.2,
+                        citations: ['Nature 2024', 'Hepatology 2024', 'Cell 2023'],
+                        generatedAt: new Date().toISOString(),
+                        reviews: []
+                    }
+                ];
+
+                // Select based on research domain/goal
+                if (goal.toLowerCase().includes('aml') || goal.toLowerCase().includes('leukemia')) {
+                    return Math.random() > 0.5 ? hypotheses[0] : hypotheses[1];
+                } else if (goal.toLowerCase().includes('fibrosis') || goal.toLowerCase().includes('liver')) {
+                    return hypotheses[2];
+                } else {
+                    return hypotheses[Math.floor(Math.random() * hypotheses.length)];
+                }
+            }
+
+            async reviewHypothesis(hypothesis, reviewType = 'full') {
+                log('REFLECTION', `Starting ${reviewType} review of: ${hypothesis.title}`);
+                
+                await this.simulateDelay(1500);
+                
+                const review = {
+                    id: generateId(),
+                    type: reviewType,
+                    hypothesis: hypothesis.id,
+                    noveltyScore: hypothesis.novelty + (Math.random() - 0.5) * 0.5,
+                    feasibilityScore: hypothesis.feasibility + (Math.random() - 0.5) * 0.5,
+                    correctnessScore: hypothesis.correctness + (Math.random() - 0.5) * 0.5,
+                    summary: this.generateReviewSummary(hypothesis, reviewType),
+                    critiques: this.generateCritiques(hypothesis),
+                    recommendations: this.generateRecommendations(hypothesis),
+                    timestamp: new Date().toISOString()
+                };
+
+                log('REFLECTION', `Review completed - Novelty: ${review.noveltyScore.toFixed(1)}, Feasibility: ${review.feasibilityScore.toFixed(1)}`);
+                return review;
+            }
+
+            generateReviewSummary(hypothesis, reviewType) {
+                const summaries = {
+                    'full': `Comprehensive literature review confirms novel approach. Hypothesis demonstrates strong mechanistic foundation with ${hypothesis.citations.length} supporting studies. Experimental design is well-structured and feasible within proposed constraints.`,
+                    'novelty': `Literature analysis reveals this mechanism has not been previously explored in this context. Represents genuine advancement over existing approaches with potential for significant impact.`,
+                    'deep': `Deep verification confirms all underlying assumptions are scientifically sound. Mechanism is consistent with current understanding of cellular pathways and disease pathogenesis.`
+                };
+                return summaries[reviewType] || summaries['full'];
+            }
+
+            generateCritiques(hypothesis) {
+                const critiques = [
+                    'Requires validation across broader panel of cell lines',
+                    'Long-term safety profile needs assessment',
+                    'Mechanism specificity should be confirmed with additional controls',
+                    'Potential drug-drug interactions require investigation'
+                ];
+                return critiques.slice(0, 2 + Math.floor(Math.random() * 2));
+            }
+
+            generateRecommendations(hypothesis) {
+                const recommendations = [
+                    'Proceed with dose-response analysis across multiple models',
+                    'Validate mechanism through pathway-specific assays',
+                    'Consider combination therapy approaches',
+                    'Develop biomarker strategy for patient selection'
+                ];
+                return recommendations.slice(0, 2 + Math.floor(Math.random() * 2));
+            }
+
+            async conductTournament(hypothesis1, hypothesis2) {
+                log('RANKING', `Tournament match: ${hypothesis1.title} vs ${hypothesis2.title}`);
+                
+                await this.simulateDelay(2000);
+                log('RANKING', 'Conducting multi-turn scientific debate...');
+                
+                await this.simulateDelay(1500);
+                
+                // Simulate Elo-based comparison
+                const k = 32; // K-factor for Elo rating
+                const expectedScore1 = 1 / (1 + Math.pow(10, (hypothesis2.elo - hypothesis1.elo) / 400));
+                const expectedScore2 = 1 - expectedScore1;
+                
+                // Determine winner based on multiple factors
+                const score1 = this.calculateCompetitiveScore(hypothesis1);
+                const score2 = this.calculateCompetitiveScore(hypothesis2);
+                
+                const actualScore1 = score1 > score2 ? 1 : 0;
+                const actualScore2 = 1 - actualScore1;
+                
+                // Update Elo ratings
+                const newElo1 = hypothesis1.elo + k * (actualScore1 - expectedScore1);
+                const newElo2 = hypothesis2.elo + k * (actualScore2 - expectedScore2);
+                
+                const match = {
+                    id: generateId(),
+                    competitor1: hypothesis1,
+                    competitor2: hypothesis2,
+                    winner: actualScore1 > actualScore2 ? hypothesis1 : hypothesis2,
+                    oldElo1: hypothesis1.elo,
+                    oldElo2: hypothesis2.elo,
+                    newElo1: Math.round(newElo1),
+                    newElo2: Math.round(newElo2),
+                    debate: this.generateDebateLog(hypothesis1, hypothesis2),
+                    timestamp: new Date().toISOString()
+                };
+
+                // Update hypothesis Elo ratings
+                hypothesis1.elo = match.newElo1;
+                hypothesis2.elo = match.newElo2;
+                
+                log('RANKING', `Winner: ${match.winner.title} (Elo: ${match.winner.elo})`);
+                return match;
+            }
+
+            calculateCompetitiveScore(hypothesis) {
+                const weights = {
+                    novelty: parseFloat(document.getElementById('novelty-weight').value) / 100,
+                    feasibility: parseFloat(document.getElementById('feasibility-weight').value) / 100,
+                    correctness: parseFloat(document.getElementById('correctness-weight').value) / 100
+                };
+                
+                return (hypothesis.novelty * weights.novelty + 
+                       hypothesis.feasibility * weights.feasibility + 
+                       hypothesis.correctness * weights.correctness) + 
+                       (Math.random() - 0.5) * 0.5; // Add small random factor
+            }
+
+            generateDebateLog(h1, h2) {
+                return [
+                    `Expert A: I find ${h1.title} compelling due to its strong mechanistic foundation and existing experimental evidence.`,
+                    `Expert B: While ${h1.title} has merit, ${h2.title} offers greater clinical translatability with its established safety profile.`,
+                    `Expert C: The novelty factor of ${h1.title} cannot be overlooked, but we must consider feasibility constraints.`,
+                    `Expert A: The IC50 values for ${h1.title} are within clinically relevant ranges, which is crucial for translation.`,
+                    `Expert B: ${h2.title} addresses multiple pathways simultaneously, potentially overcoming resistance mechanisms.`,
+                    `Consensus: After thorough evaluation, the panel determines the superior hypothesis based on overall scientific merit.`
+                ];
+            }
+
+            async evolveHypothesis(hypothesis, strategy = 'enhancement') {
+                log('EVOLUTION', `Evolving hypothesis using ${strategy} strategy: ${hypothesis.title}`);
+                
+                await this.simulateDelay(1000);
+                
+                const evolved = JSON.parse(JSON.stringify(hypothesis)); // Deep copy
+                evolved.id = generateId();
+                evolved.title = `Enhanced: ${hypothesis.title}`;
+                evolved.elo = hypothesis.elo + Math.floor((Math.random() - 0.3) * 50); // Slight improvement bias
+                evolved.novelty = Math.min(5.0, hypothesis.novelty + (Math.random() - 0.3) * 0.5);
+                evolved.feasibility = Math.min(5.0, hypothesis.feasibility + (Math.random() - 0.3) * 0.5);
+                evolved.generatedAt = new Date().toISOString();
+                
+                // Add evolution notes
+                evolved.content += `\n\n**Evolution Notes:**\n- Enhanced through ${strategy} strategy\n- Improved experimental design based on review feedback\n- Additional literature support integrated\n- Refined mechanism details added`;
+                
+                log('EVOLUTION', `Evolution complete - New Elo: ${evolved.elo}`);
+                return evolved;
+            }
+
+            async generateResearchOverview(hypotheses) {
+                log('META-REVIEW', 'Generating comprehensive research overview...');
+                
+                await this.simulateDelay(2000);
+                
+                const topHypotheses = hypotheses.sort((a, b) => b.elo - a.elo).slice(0, 3);
+                
+                const overview = {
+                    title: 'AI Co-Scientist Research Overview',
+                    summary: `Analysis of ${hypotheses.length} generated hypotheses reveals promising directions for ${systemState.researchGoal.split('.')[0].toLowerCase()}.`,
+                    topHypotheses: topHypotheses,
+                    keyFindings: [
+                        'Novel drug repurposing opportunities identified with clinical validation potential',
+                        'Mechanistic insights reveal previously unexplored therapeutic pathways',
+                        'Experimental protocols designed for immediate validation',
+                        'Safety profiles support rapid clinical translation'
+                    ],
+                    recommendations: [
+                        'Prioritize top-ranked hypotheses for experimental validation',
+                        'Initiate dose-response studies in primary cell models',
+                        'Develop biomarker strategies for patient stratification',
+                        'Consider combination therapy approaches for enhanced efficacy'
+                    ],
+                    nextSteps: [
+                        'Literature validation through comprehensive database search',
+                        'Experimental design refinement with domain experts',
+                        'Regulatory pathway assessment for clinical translation',
+                        'Collaboration identification with relevant research groups'
+                    ],
+                    timestamp: new Date().toISOString()
+                };
+                
+                log('META-REVIEW', 'Research overview generated successfully');
+                return overview;
+            }
+
+            async simulateDelay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Initialize the AI engine
+        const aiEngine = new AICoScientistEngine();
+
+        // System initialization
+        function initializeSystem() {
+            log('SYSTEM', 'Initializing AI Co-Scientist system...');
+            
+            // Initialize agent overview cards
+            updateAgentOverviewCards();
+            updateDetailedAgentCards();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            log('SYSTEM', 'System initialization complete');
+        }
+
+        function setupEventListeners() {
+            // Weight sliders
+            document.getElementById('novelty-weight').addEventListener('input', updateWeights);
+            document.getElementById('feasibility-weight').addEventListener('input', updateWeights);
+            document.getElementById('correctness-weight').addEventListener('input', updateWeights);
+            
+            // Toggle switches
+            document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const setting = this.getAttribute('data-setting');
+                    systemState.settings[setting] = this.classList.contains('active');
+                    log('SYSTEM', `${setting} ${systemState.settings[setting] ? 'enabled' : 'disabled'}`);
+                });
+            });
+        }
+
+        function updateWeights() {
+            const novelty = parseInt(document.getElementById('novelty-weight').value);
+            const feasibility = parseInt(document.getElementById('feasibility-weight').value);
+            const correctness = parseInt(document.getElementById('correctness-weight').value);
+            
+            document.getElementById('novelty-value').textContent = novelty + '%';
+            document.getElementById('feasibility-value').textContent = feasibility + '%';
+            document.getElementById('correctness-value').textContent = correctness + '%';
+            
+            // Auto-adjust to maintain 100% total
+            const total = novelty + feasibility + correctness;
+            if (total !== 100) {
+                const adjustment = (100 - total) / 3;
+                // Could implement auto-adjustment logic here
+            }
+        }
+
+        async function startCoScientist() {
+            if (systemState.isRunning) return;
+            
+            systemState.isRunning = true;
+            systemState.currentIteration = 0;
+            systemState.hypotheses = [];
+            systemState.tournamentMatches = [];
+            
+            // Get user inputs
+            systemState.researchGoal = document.getElementById('research-goal').value;
+            systemState.constraints = document.getElementById('constraints').value;
+            systemState.criteria = document.getElementById('criteria').value;
+            
+            const computeBudget = document.getElementById('compute-budget').value;
+            systemState.maxIterations = {
+                'minimal': 10,
+                'standard': 25,
+                'extensive': 50,
+                'maximum': 100
+            }[computeBudget];
+            
+            // Update UI
+            document.getElementById('start-btn').disabled = true;
+            document.getElementById('stop-btn').disabled = false;
+            document.getElementById('system-status').textContent = 'RUNNING';
+            
+            log('SYSTEM', `Starting co-scientist with ${systemState.maxIterations} iterations`);
+            log('SYSTEM', `Research Goal: ${systemState.researchGoal.substring(0, 100)}...`);
+            
+            // Start the main loop
+            runCoScientistLoop();
+        }
+
+        async function runCoScientistLoop() {
+            try {
+                for (let iteration = 1; iteration <= systemState.maxIterations && systemState.isRunning; iteration++) {
+                    systemState.currentIteration = iteration;
+                    updateProgress();
+                    
+                    log('SYSTEM', `=== Iteration ${iteration}/${systemState.maxIterations} ===`);
+                    
+                    // Phase 1: Generation (first 20% of iterations)
+                    if (iteration <= systemState.maxIterations * 0.2) {
+                        await runGenerationPhase();
+                    }
+                    
+                    // Phase 2: Review and Ranking (20%-60% of iterations)
+                    else if (iteration <= systemState.maxIterations * 0.6) {
+                        await runReviewPhase();
+                        if (systemState.hypotheses.length >= 2) {
+                            await runTournamentPhase();
+                        }
+                    }
+                    
+                    // Phase 3: Evolution and Refinement (60%-90% of iterations)
+                    else if (iteration <= systemState.maxIterations * 0.9) {
+                        await runEvolutionPhase();
+                        if (systemState.hypotheses.length >= 2) {
+                            await runTournamentPhase();
+                        }
+                    }
+                    
+                    // Phase 4: Meta-analysis and Overview (final 10%)
+                    else {
+                        await runMetaAnalysisPhase();
+                    }
+                    
+                    // Update displays
+                    updateHypothesesDisplay();
+                    updateTournamentDisplay();
+                    updateSystemStatus();
+                    
+                    // Small delay between iterations
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+                
+                if (systemState.isRunning) {
+                    await completeCoScientist();
+                }
+                
+            } catch (error) {
+                log('SYSTEM', `Error in main loop: ${error.message}`, 'error');
+                stopCoScientist();
+            }
+        }
+
+        async function runGenerationPhase() {
+            setAgentActive('generation');
+            
+            try {
+                const hypothesis = await aiEngine.generateHypothesis(
+                    systemState.researchGoal,
+                    systemState.constraints,
+                    systemState.hypotheses
+                );
+                
+                systemState.hypotheses.push(hypothesis);
+                systemState.agents.generation.completed++;
+                
+                log('GENERATION', `Generated hypothesis ${systemState.hypotheses.length}: ${hypothesis.title}`);
+                
+            } finally {
+                setAgentInactive('generation');
+            }
+        }
+
+        async function runReviewPhase() {
+            if (systemState.hypotheses.length === 0) return;
+            
+            setAgentActive('reflection');
+            
+            try {
+                // Review hypotheses that haven't been reviewed yet
+                const unreviewedHypotheses = systemState.hypotheses.filter(h => h.reviews.length === 0);
+                
+                if (unreviewedHypotheses.length > 0) {
+                    const hypothesis = unreviewedHypotheses[0];
+                    const reviewType = Math.random() > 0.7 ? 'deep' : 'full';
+                    
+                    const review = await aiEngine.reviewHypothesis(hypothesis, reviewType);
+                    hypothesis.reviews.push(review);
+                    
+                    // Update hypothesis scores based on review
+                    hypothesis.novelty = (hypothesis.novelty + review.noveltyScore) / 2;
+                    hypothesis.feasibility = (hypothesis.feasibility + review.feasibilityScore) / 2;
+                    hypothesis.correctness = (hypothesis.correctness + review.correctnessScore) / 2;
+                    
+                    systemState.agents.reflection.completed++;
+                }
+                
+            } finally {
+                setAgentInactive('reflection');
+            }
+        }
+
+        async function runTournamentPhase() {
+            if (systemState.hypotheses.length < 2) return;
+            
+            setAgentActive('ranking');
+            
+            try {
+                // Select two hypotheses for tournament
+                const sorted = systemState.hypotheses.sort((a, b) => b.elo - a.elo);
+                const hypothesis1 = sorted[Math.floor(Math.random() * Math.min(3, sorted.length))];
+                
+                let hypothesis2;
+                do {
+                    hypothesis2 = sorted[Math.floor(Math.random() * sorted.length)];
+                } while (hypothesis2.id === hypothesis1.id && sorted.length > 1);
+                
+                if (hypothesis2) {
+                    const match = await aiEngine.conductTournament(hypothesis1, hypothesis2);
+                    systemState.tournamentMatches.push(match);
+                    systemState.agents.ranking.completed++;
+                }
+                
+            } finally {
+                setAgentInactive('ranking');
+            }
+        }
+
+        async function runEvolutionPhase() {
+            if (systemState.hypotheses.length === 0) return;
+            
+            setAgentActive('evolution');
+            
+            try {
+                // Evolve top hypotheses
+                const topHypotheses = systemState.hypotheses
+                    .sort((a, b) => b.elo - a.elo)
+                    .slice(0, 2);
+                
+                if (topHypotheses.length > 0) {
+                    const strategy = ['enhancement', 'grounding', 'coherence', 'synthesis'][Math.floor(Math.random() * 4)];
+                    const evolved = await aiEngine.evolveHypothesis(topHypotheses[0], strategy);
+                    systemState.hypotheses.push(evolved);
+                    systemState.agents.evolution.completed++;
+                }
+                
+            } finally {
+                setAgentInactive('evolution');
+            }
+        }
+
+        async function runMetaAnalysisPhase() {
+            setAgentActive('metareview');
+            
+            try {
+                if (systemState.currentIteration === Math.floor(systemState.maxIterations * 0.95)) {
+                    // Generate final research overview
+                    const overview = await aiEngine.generateResearchOverview(systemState.hypotheses);
+                    displayResearchOverview(overview);
+                    systemState.agents.metareview.completed++;
+                }
+                
+            } finally {
+                setAgentInactive('metareview');
+            }
+        }
+
+        async function completeCoScientist() {
+            systemState.isRunning = false;
+            
+            log('SYSTEM', 'Co-scientist process completed successfully');
+            log('SYSTEM', `Generated ${systemState.hypotheses.length} hypotheses`);
+            log('SYSTEM', `Conducted ${systemState.tournamentMatches.length} tournament matches`);
+            
+            // Update UI
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('stop-btn').disabled = true;
+            document.getElementById('system-status').textContent = 'COMPLETE';
+            document.getElementById('progress-text').textContent = 'Process Complete - Review Results';
+            
+            // Mark all agents as complete
+            Object.keys(systemState.agents).forEach(agent => {
+                systemState.agents[agent].status = 'complete';
+            });
+            
+            updateAgentOverviewCards();
+            updateDetailedAgentCards();
+        }
+
+        function stopCoScientist() {
+            systemState.isRunning = false;
+            
+            log('SYSTEM', 'Co-scientist process stopped by user');
+            
+            // Update UI
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('stop-btn').disabled = true;
+            document.getElementById('system-status').textContent = 'STOPPED';
+            
+            // Reset agent states
+            Object.keys(systemState.agents).forEach(agent => {
+                systemState.agents[agent].active = false;
+                systemState.agents[agent].status = 'idle';
+            });
+            
+            updateAgentOverviewCards();
+            updateDetailedAgentCards();
+        }
+
+        function resetSystem() {
+            stopCoScientist();
+            
+            // Reset all state
+            systemState.currentIteration = 0;
+            systemState.hypotheses = [];
+            systemState.tournamentMatches = [];
+            
+            Object.keys(systemState.agents).forEach(agent => {
+                systemState.agents[agent].completed = 0;
+                systemState.agents[agent].status = 'idle';
+                systemState.agents[agent].active = false;
+            });
+            
+            // Clear displays
+            document.getElementById('hypotheses-container').innerHTML = '';
+            document.getElementById('tournament-container').innerHTML = '';
+            document.getElementById('research-overview-container').classList.add('hidden');
+            document.getElementById('overall-progress').style.width = '0%';
+            document.getElementById('progress-text').textContent = 'System Ready - Click Initialize to Begin';
+            
+            // Reset logs
+            document.getElementById('system-logs').innerHTML = `
+                <div class="log-entry">
+                    <span class="log-timestamp">[${formatTime(new Date())}]</span>
+                    <span class="log-agent">[SYSTEM]</span>
+                    <span class="log-message">System reset - ready for new research session</span>
+                </div>
+            `;
+            
+            updateSystemStatus();
+            updateAgentOverviewCards();
+            updateDetailedAgentCards();
+            
+            log('SYSTEM', 'System reset complete');
+        }
+
+        // UI Helper Functions
+        function setAgentActive(agentName) {
+            systemState.agents[agentName].active = true;
+            systemState.agents[agentName].status = 'active';
+            updateAgentOverviewCards();
+            updateDetailedAgentCards();
+        }
+
+        function setAgentInactive(agentName) {
+            systemState.agents[agentName].active = false;
+            systemState.agents[agentName].status = 'idle';
+            updateAgentOverviewCards();
+            updateDetailedAgentCards();
+        }
+
+        function updateProgress() {
+            const progress = (systemState.currentIteration / systemState.maxIterations) * 100;
+            document.getElementById('overall-progress').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = 
+                `Iteration ${systemState.currentIteration}/${systemState.maxIterations} - ${progress.toFixed(1)}% Complete`;
+        }
+
+        function updateSystemStatus() {
+            document.getElementById('active-agents').textContent = 
+                `${Object.values(systemState.agents).filter(a => a.active).length}/6`;
+            document.getElementById('hypotheses-count').textContent = systemState.hypotheses.length;
+            document.getElementById('tournament-matches').textContent = systemState.tournamentMatches.length;
+            document.getElementById('current-iteration').textContent = systemState.currentIteration;
+        }
+
+        function updateAgentOverviewCards() {
+            const container = document.getElementById('agent-overview-grid');
+            container.innerHTML = '';
+            
+            Object.entries(agentDefinitions).forEach(([key, agent]) => {
+                const state = systemState.agents[key];
+                const card = document.createElement('div');
+                card.className = `agent-card ${state.active ? 'active' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="agent-header">
+                        <div class="agent-name">${agent.name}</div>
+                        <div class="agent-status ${state.status}">${state.status.toUpperCase()}</div>
+                    </div>
+                    <div class="agent-description">${agent.description}</div>
+                    <div class="agent-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Completed</span>
+                            <span class="metric-value">${state.completed}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Status</span>
+                            <span class="metric-value">${state.status}</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function updateDetailedAgentCards() {
+            const container = document.getElementById('detailed-agent-grid');
+            container.innerHTML = '';
+            
+            Object.entries(agentDefinitions).forEach(([key, agent]) => {
+                const state = systemState.agents[key];
+                const card = document.createElement('div');
+                card.className = `agent-card ${state.active ? 'active' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="agent-header">
+                        <div class="agent-name">${agent.name}</div>
+                        <div class="agent-status ${state.status}">${state.status.toUpperCase()}</div>
+                    </div>
+                    <div class="agent-description">${agent.description}</div>
+                    
+                    <div style="margin: 15px 0;">
+                        <h4 style="color: #00ff41; margin-bottom: 10px;">Capabilities:</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            ${agent.capabilities.map(cap => `
+                                <li style="background: rgba(0,0,0,0.3); padding: 5px 10px; margin: 3px 0; border-radius: 4px; border-left: 2px solid #00ff41;">
+                                    ${cap}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="agent-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Tasks Completed</span>
+                            <span class="metric-value">${state.completed}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Current Status</span>
+                            <span class="metric-value">${state.status}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Efficiency</span>
+                            <span class="metric-value">${state.completed > 0 ? '98%' : 'N/A'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function updateHypothesesDisplay() {
+            const container = document.getElementById('hypotheses-container');
+            
+            if (systemState.hypotheses.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No hypotheses generated yet...</p>';
+                return;
+            }
+            
+            // Sort hypotheses by Elo rating
+            const sortedHypotheses = [...systemState.hypotheses].sort((a, b) => b.elo - a.elo);
+            
+            container.innerHTML = '';
+            
+            sortedHypotheses.forEach((hypothesis, index) => {
+                const hypothesisDiv = document.createElement('div');
+                hypothesisDiv.className = 'hypothesis-container';
+                
+                hypothesisDiv.innerHTML = `
+                    <div class="hypothesis-header" onclick="toggleHypothesis('${hypothesis.id}')">
+                        <div class="hypothesis-title">${hypothesis.title}</div>
+                        <div class="hypothesis-rank">#${index + 1}</div>
+                    </div>
+                    <div class="hypothesis-content" id="content-${hypothesis.id}">
+                        <div class="hypothesis-metadata">
+                            <div class="metadata-item">
+                                <span class="metadata-label">Elo Rating</span>
+                                <span class="metadata-value">${hypothesis.elo}</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Novelty</span>
+                                <span class="metadata-value">${hypothesis.novelty.toFixed(1)}/5</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Feasibility</span>
+                                <span class="metadata-value">${hypothesis.feasibility.toFixed(1)}/5</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Correctness</span>
+                                <span class="metadata-value">${hypothesis.correctness.toFixed(1)}/5</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Reviews</span>
+                                <span class="metadata-value">${hypothesis.reviews.length}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="hypothesis-text">
+                            <h4 style="color: #00ff41; margin-bottom: 10px;">Mechanism:</h4>
+                            <p style="margin-bottom: 15px;">${hypothesis.mechanism}</p>
+                            
+                            <h4 style="color: #00ff41; margin-bottom: 10px;">Detailed Analysis:</h4>
+                            <div style="white-space: pre-line; line-height: 1.6;">${hypothesis.content}</div>
+                        </div>
+                        
+                        ${hypothesis.reviews.length > 0 ? `
+                            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
+                                <h4 style="color: #00ff41; margin-bottom: 15px;">Reviews (${hypothesis.reviews.length}):</h4>
+                                ${hypothesis.reviews.map(review => `
+                                    <div style="background: rgba(0,0,0,0.3); padding: 15px; margin-bottom: 10px; border-radius: 8px;">
+                                        <div style="margin-bottom: 10px;">
+                                            <strong style="color: #00ff41;">${review.type.toUpperCase()} REVIEW</strong>
+                                            <span style="color: #888; margin-left: 10px;">${new Date(review.timestamp).toLocaleString()}</span>
+                                        </div>
+                                        <p style="margin-bottom: 10px;">${review.summary}</p>
+                                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                                            <span>Novelty: <strong style="color: #00ff41;">${review.noveltyScore.toFixed(1)}</strong></span>
+                                            <span>Feasibility: <strong style="color: #00ff41;">${review.feasibilityScore.toFixed(1)}</strong></span>
+                                            <span>Correctness: <strong style="color: #00ff41;">${review.correctnessScore.toFixed(1)}</strong></span>
+                                        </div>
+                                        ${review.critiques.length > 0 ? `
+                                            <div style="margin-top: 10px;">
+                                                <strong style="color: #ff6b35;">Critiques:</strong>
+                                                <ul style="margin: 5px 0 0 20px;">
+                                                    ${review.critiques.map(critique => `<li>${critique}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; font-size: 0.9em; color: #888;">
+                            <strong>Citations:</strong> ${hypothesis.citations.join(', ')}<br>
+                            <strong>Generated:</strong> ${new Date(hypothesis.generatedAt).toLocaleString()}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(hypothesisDiv);
+            });
+        }
+
+        function updateTournamentDisplay() {
+            const container = document.getElementById('tournament-container');
+            
+            if (systemState.tournamentMatches.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No tournament matches yet...</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            // Add tournament arena header
+            const arenaHeader = document.createElement('div');
+            arenaHeader.className = 'tournament-arena';
+            arenaHeader.innerHTML = `
+                <div class="tournament-title">🏆 HYPOTHESIS TOURNAMENT ARENA</div>
+                <p style="text-align: center; color: #aaa; margin-bottom: 20px;">
+                    Elo-based competitions with multi-turn scientific debates
+                </p>
+            `;
+            container.appendChild(arenaHeader);
+            
+            // Show recent matches (last 5)
+            const recentMatches = systemState.tournamentMatches.slice(-5).reverse();
+            
+            recentMatches.forEach((match, index) => {
+                const matchDiv = document.createElement('div');
+                matchDiv.style.cssText = `
+                    background: linear-gradient(135deg, #1a1a2e, #16213e);
+                    border: 1px solid #333;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                `;
+                
+                matchDiv.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 15px; color: #ff6b35; font-weight: 700;">
+                        MATCH #${systemState.tournamentMatches.length - index}
+                    </div>
+                    
+                    <div class="tournament-match">
+                        <div class="competitor ${match.winner.id === match.competitor1.id ? 'winner' : ''}">
+                            <div style="font-weight: 700; margin-bottom: 8px;">${match.competitor1.title}</div>
+                            <div style="color: #888; margin-bottom: 10px;">Elo: ${match.oldElo1} → ${match.newElo1}</div>
+                            <div style="font-size: 0.9em;">
+                                N: ${match.competitor1.novelty.toFixed(1)} | 
+                                F: ${match.competitor1.feasibility.toFixed(1)} | 
+                                C: ${match.competitor1.correctness.toFixed(1)}
+                            </div>
+                        </div>
+                        
+                        <div class="vs-indicator">VS</div>
+                        
+                        <div class="competitor ${match.winner.id === match.competitor2.id ? 'winner' : ''}">
+                            <div style="font-weight: 700; margin-bottom: 8px;">${match.competitor2.title}</div>
+                            <div style="color: #888; margin-bottom: 10px;">Elo: ${match.oldElo2} → ${match.newElo2}</div>
+                            <div style="font-size: 0.9em;">
+                                N: ${match.competitor2.novelty.toFixed(1)} | 
+                                F: ${match.competitor2.feasibility.toFixed(1)} | 
+                                C: ${match.competitor2.correctness.toFixed(1)}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 15px 0; padding: 10px; background: rgba(0,255,65,0.1); border-radius: 8px;">
+                        <strong style="color: #00ff41;">WINNER: ${match.winner.title}</strong>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <div style="color: #00ff41; font-weight: 600; margin-bottom: 10px; cursor: pointer;" onclick="toggleDebateLog('${match.id}')">
+                            🗣️ Scientific Debate Log ▼
+                        </div>
+                        <div id="debate-${match.id}" style="display: none; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9em;">
+                            ${match.debate.map((statement, i) => `
+                                <div style="margin-bottom: 8px; padding: 5px 0; border-bottom: 1px solid #333;">
+                                    ${statement}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 10px; font-size: 0.8em; color: #666;">
+                        ${new Date(match.timestamp).toLocaleString()}
+                    </div>
+                `;
+                
+                container.appendChild(matchDiv);
+            });
+        }
+
+        function displayResearchOverview(overview) {
+            const container = document.getElementById('research-overview-container');
+            const content = document.getElementById('research-overview-content');
+            
+            content.innerHTML = `
+                <div class="overview-section">
+                    <h4>Executive Summary</h4>
+                    <div class="overview-text">${overview.summary}</div>
+                </div>
+                
+                <div class="overview-section">
+                    <h4>Top-Ranked Hypotheses</h4>
+                    ${overview.topHypotheses.map((h, i) => `
+                        <div style="background: rgba(0,0,0,0.3); padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 3px solid #00ff41;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <strong style="color: #00ff41;">#${i + 1}: ${h.title}</strong>
+                                <span style="background: #00ff41; color: #000; padding: 4px 8px; border-radius: 12px; font-size: 0.8em; font-weight: 700;">
+                                    Elo: ${h.elo}
+                                </span>
+                            </div>
+                            <div style="color: #aaa; font-size: 0.9em;">${h.mechanism}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="overview-section">
+                    <h4>Key Findings</h4>
+                    <ul class="recommendation-list">
+                        ${overview.keyFindings.map(finding => `<li>${finding}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="overview-section">
+                    <h4>Recommendations</h4>
+                    <ul class="recommendation-list">
+                        ${overview.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="overview-section">
+                    <h4>Next Steps</h4>
+                    <ul class="recommendation-list">
+                        ${overview.nextSteps.map(step => `<li>${step}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.9em;">
+                    Generated: ${new Date(overview.timestamp).toLocaleString()}
+                </div>
+            `;
+            
+            container.classList.remove('hidden');
+        }
+
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            
+            // Show selected tab panel
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Toggle functions
+        function toggleHypothesis(hypothesisId) {
+            const content = document.getElementById(`content-${hypothesisId}`);
+            content.classList.toggle('visible');
+        }
+
+        function toggleDebateLog(matchId) {
+            const log = document.getElementById(`debate-${matchId}`);
+            log.style.display = log.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Logging system
+        function log(agent, message, type = 'info') {
+            const timestamp = formatTime(new Date());
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            
+            const logClass = type === 'error' ? 'log-error' : type === 'success' ? 'log-success' : 'log-message';
+            
+            logEntry.innerHTML = `
+                <span class="log-timestamp">[${timestamp}]</span>
+                <span class="log-agent">[${agent}]</span>
+                <span class="${logClass}">${message}</span>
+            `;
+            
+            const logsContainer = document.getElementById('system-logs');
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        // Initialize system when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            log('SYSTEM', 'AI Co-Scientist ready for scientific discovery');
+        });
+
+        // Add some example research goals for quick testing
+        const exampleGoals = [
+            {
+                goal: "Develop a novel hypothesis for treating acute myeloid leukemia (AML) through drug repurposing. Focus on identifying existing FDA-approved drugs that could inhibit AML cell proliferation through novel mechanisms of action.",
+                constraints: "- Must be testable in vitro using AML cell lines (MOLM-13, HL-60, KG-1)\n- Prefer drugs with established safety profiles in humans\n- Focus on IC50 concentrations under 1μM for clinical relevance\n- Exclude drugs with known severe hepatotoxicity\n- Consider mechanisms beyond traditional chemotherapy",
+                criteria: "- Novelty: Must propose previously unexplored mechanisms\n- Plausibility: Supported by scientific literature\n- Testability: Clear experimental protocols provided\n- Safety: Consider known safety profiles\n- Clinical relevance: Potential for translation"
+            },
+            {
+                goal: "Propose novel epigenetic targets for liver fibrosis treatment. Identify specific histone modifications or DNA methylation patterns that contribute to myofibroblast activation and could be targeted therapeutically.",
+                constraints: "- Must be testable in human hepatic organoids\n- Focus on reversible epigenetic modifications\n- Consider existing epigenetic drugs for repurposing\n- Avoid targets with known developmental toxicity\n- Prioritize mechanisms with biomarker potential",
+                criteria: "- Mechanistic novelty and biological plausibility\n- Therapeutic window and selectivity\n- Experimental feasibility in organoid models\n- Potential for clinical translation\n- Biomarker development opportunity"
+            },
+            {
+                goal: "Explain the molecular mechanisms by which capsid-forming phage-inducible chromosomal islands (cf-PICIs) achieve broad host range across bacterial species for antimicrobial resistance.",
+                constraints: "- Focus on protein-protein interactions and DNA transfer mechanisms\n- Must explain species-specificity patterns observed in clinical isolates\n- Consider both horizontal and vertical gene transfer\n- Address evolutionary selection pressures\n- Propose testable hypotheses for mechanism validation",
+                criteria: "- Mechanistic depth and molecular detail\n- Evolutionary coherence and selection rationale\n- Experimental testability and validation approaches\n- Clinical relevance to AMR patterns\n- Novel insights beyond current understanding"
+            }
+        ];
+
+        // Add quick-load buttons for examples
+        function addExampleButtons() {
+            const controlSection = document.querySelector('.control-section');
+            const exampleSection = document.createElement('div');
+            exampleSection.innerHTML = `
+                <h3>Example Research Goals</h3>
+                <div style="display: grid; gap: 10px;">
+                    ${exampleGoals.map((example, i) => `
+                        <button class="btn btn-secondary" onclick="loadExample(${i})" style="text-align: left; padding: 10px;">
+                            Example ${i + 1}: ${example.goal.substring(0, 60)}...
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            controlSection.parentNode.insertBefore(exampleSection, controlSection.nextSibling);
+        }
+
+        function loadExample(index) {
+            const example = exampleGoals[index];
+            document.getElementById('research-goal').value = example.goal;
+            document.getElementById('constraints').value = example.constraints;
+            document.getElementById('criteria').value = example.criteria;
+            log('SYSTEM', `Loaded example research goal ${index + 1}`);
+        }
+
+        // Add example buttons after system initialization
+        setTimeout(addExampleButtons, 1000);
+    </script>
+</body>
+</html>
