@@ -227,6 +227,84 @@
             backdrop-filter: blur(10px);
         }
 
+        .tools-section {
+            margin-bottom: 6rem;
+        }
+
+        .education-section {
+            margin-top: 4rem;
+        }
+
+        .subsection-title {
+            font-size: 2rem;
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .subsection-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .tool-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tool-status.coming-soon {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .tool-status.demo {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+        }
+
+        .tool-status.in-progress {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            border: 1px solid #00d4ff;
+        }
+
         .resources-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -563,7 +641,7 @@
                 font-size: 2rem;
             }
 
-            .resources-grid {
+            .resources-grid, .tools-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -635,92 +713,111 @@
 
         <section id="resources" class="resources">
             <div class="container">
-                <h2 class="section-title">Comprehensive AI Transformation Resources</h2>
-                <p class="section-subtitle">Everything you need to navigate your AI transformation journey, from practical guides to advanced implementation frameworks.</p>
+                <h2 class="section-title">AI Tools & Resources</h2>
+                <p class="section-subtitle">Complete ecosystem of AI transformation tools and comprehensive educational resources.</p>
                 
-                <div class="resources-grid">
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🧠</div>
-                        <h3 class="resource-title">AGI Readiness Assessment</h3>
-                        <p class="resource-description">Strategic framework for preparing your organization for Artificial General Intelligence with comprehensive readiness metrics and preparation strategies.</p>
-                        <a href="agi-readiness-assessment.html" class="resource-link">Explore Framework →</a>
-                    </div>
+                <!-- AI Tools & Systems -->
+                <div class="tools-section">
+                    <h3 class="subsection-title">🤖 AI Tools & Systems</h3>
+                    <p class="subsection-subtitle">Advanced AI agents and operating systems for autonomous business and economic transformation.</p>
+                    
+                    <div class="tools-grid">
+                        <div class="tool-card fade-in">
+                            <div class="tool-status coming-soon">Coming Soon</div>
+                            <div class="resource-icon">🚀</div>
+                            <h3 class="resource-title">Digital Entrepreneur AI Agent</h3>
+                            <p class="resource-description">AI-powered system for autonomous business creation, management, and scaling - the future of entrepreneurship through intelligent automation.</p>
+                            <a href="entrepreneur-ai-agent.html" class="resource-link">Preview System →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🏢</div>
-                        <h3 class="resource-title">Level 5 AI Organization Framework</h3>
-                        <p class="resource-description">Complete blueprint for AI-managed organizations with multi-agent systems, governance structures, and implementation roadmaps.</p>
-                        <a href="level-5-ai-organization.html" class="resource-link">View Blueprint →</a>
-                    </div>
+                        <div class="tool-card fade-in">
+                            <div class="tool-status demo">Demo Available</div>
+                            <div class="resource-icon">🤝</div>
+                            <h3 class="resource-title">Co-Scientist AI Implementation</h3>
+                            <p class="resource-description">Advanced AI system for collaborative research and innovation, specialized agents working on complex knowledge-intensive tasks.</p>
+                            <a href="ai-co-scientist.html" class="resource-link">Try Demo →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🤝</div>
-                        <h3 class="resource-title">Level 4 Co-Scientist Implementation</h3>
-                        <p class="resource-description">Advanced guide for implementing Level 4 AI systems with specialized agents collaborating on complex research and innovation projects.</p>
-                        <a href="https://claude.ai/public/artifacts/c6c15d76-90a3-44ad-aa28-e32744fc248a" target="_blank" class="resource-link">Learn More →</a>
-                    </div>
+                        <div class="tool-card fade-in">
+                            <div class="tool-status coming-soon">Coming Soon</div>
+                            <div class="resource-icon">🏢</div>
+                            <h3 class="resource-title">Level 5 AI Organization System</h3>
+                            <p class="resource-description">Complete AI-managed organization platform with multi-agent systems, governance structures, and autonomous operations.</p>
+                            <a href="level-5-ai-organization.html" class="resource-link">View Framework →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🚀</div>
-                        <h3 class="resource-title">Digital Entrepreneur AI Agent</h3>
-                        <p class="resource-description">Digital Tesla system for automated business operations, from opportunity identification to execution and optimization.</p>
-                        <a href="entrepreneur-ai-agent.html" class="resource-link">Get Started →</a>
-                    </div>
+                        <div class="tool-card fade-in">
+                            <div class="tool-status in-progress">In Progress</div>
+                            <div class="resource-icon">🧬</div>
+                            <h3 class="resource-title">Consciousness Engineering System</h3>
+                            <p class="resource-description">Revolutionary architecture for achieving Artificial General Intelligence through genuine conscious awareness and self-modification.</p>
+                            <a href="consciousness-engineering.html" class="resource-link">Explore Architecture →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🛠️</div>
-                        <h3 class="resource-title">Building AI Agents Guide</h3>
-                        <p class="resource-description">Practical handbook for creating custom AI agents, from simple automation to complex multi-agent systems with coordination capabilities.</p>
-                        <a href="building-ai-agents.html" class="resource-link">Build Agents →</a>
+                        <div class="tool-card fade-in">
+                            <div class="tool-status in-progress">In Progress</div>
+                            <div class="resource-icon">🌍</div>
+                            <h3 class="resource-title">Post-Scarcity Economy OS</h3>
+                            <p class="resource-description">Operating system for individual economic sovereignty, orchestrating robots, 3D printers, and automation into complete self-sufficiency.</p>
+                            <a href="post-scarcity-economy.html" class="resource-link">Study System →</a>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">💬</div>
-                        <h3 class="resource-title">Master Prompt Engineering</h3>
-                        <p class="resource-description">Comprehensive guide to advanced prompt engineering techniques for maximizing AI system performance and achieving precise results.</p>
-                        <a href="https://github.com/ClayWarren/prompt-engineering" class="resource-link">Master Prompts →</a>
-                    </div>
+                <!-- Educational Resources -->
+                <div class="education-section">
+                    <h3 class="subsection-title">📚 Educational Resources</h3>
+                    <p class="subsection-subtitle">Comprehensive guides, frameworks, and insights for mastering AI transformation and implementation.</p>
+                    
+                    <div class="resources-grid">
+                        <div class="resource-card fade-in">
+                            <div class="resource-icon">🛠️</div>
+                            <h3 class="resource-title">Building AI Agents Guide</h3>
+                            <p class="resource-description">Practical handbook for creating custom AI agents, from simple automation to complex multi-agent systems with coordination capabilities.</p>
+                            <a href="building-ai-agents.html" class="resource-link">Build Agents →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🧬</div>
-                        <h3 class="resource-title">Consciousness Engineering</h3>
-                        <p class="resource-description">Cutting-edge research into conscious AI development, exploring the path toward truly sentient artificial intelligence systems.</p>
-                        <a href="consciousness-engineering.html" class="resource-link">Explore Research →</a>
-                    </div>
+                        <div class="resource-card fade-in">
+                            <div class="resource-icon">💬</div>
+                            <h3 class="resource-title">Master Prompt Engineering</h3>
+                            <p class="resource-description">Comprehensive guide to advanced prompt engineering techniques for maximizing AI system performance and achieving precise results.</p>
+                            <a href="https://github.com/ClayWarren/prompt-engineering" class="resource-link">Master Prompts →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🌍</div>
-                        <h3 class="resource-title">Post-Scarcity Economy OS</h3>
-                        <p class="resource-description">Strategic framework for individual economic sovereignty through AI-managed automation and self-sufficiency systems.</p>
-                        <a href="post-scarcity-economy.html" class="resource-link">Study Economics →</a>
-                    </div>
+                        <div class="resource-card fade-in">
+                            <div class="resource-icon">⚖️</div>
+                            <h3 class="resource-title">AI Legal & Compliance Guide</h3>
+                            <p class="resource-description">2025 comprehensive compliance framework for AI service providers, covering regulatory landscape and implementation requirements.</p>
+                            <a href="ai-legal-compliance.html" class="resource-link">Ensure Compliance →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🤖</div>
-                        <h3 class="resource-title">How AI Works</h3>
-                        <p class="resource-description">Comprehensive synthesis of AI's evolution, current capabilities, and future prospects from foundations to superintelligence.</p>
-                        <a href="how-ai-works.html" class="resource-link">Understand AI →</a>
-                    </div>
+                        <div class="resource-card fade-in">
+                            <div class="resource-icon">📈</div>
+                            <h3 class="resource-title">Advanced LLMs Guide</h3>
+                            <p class="resource-description">Technical deep-dive into transformer architecture, training methods, and cutting-edge developments in large language models.</p>
+                            <a href="llms-advanced-techniques.html" class="resource-link">Master AI Tools →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">⚖️</div>
-                        <h3 class="resource-title">AI Legal & Compliance Guide</h3>
-                        <p class="resource-description">2025 comprehensive compliance framework for AI service providers, covering regulatory landscape and implementation requirements.</p>
-                        <a href="ai-legal-compliance.html" class="resource-link">Ensure Compliance →</a>
-                    </div>
+                        <div class="resource-card fade-in">
+                            <div class="resource-icon">🧠</div>
+                            <h3 class="resource-title">AGI Readiness Assessment</h3>
+                            <p class="resource-description">Strategic framework for preparing your organization for Artificial General Intelligence with comprehensive readiness metrics and preparation strategies.</p>
+                            <a href="agi-readiness-assessment.html" class="resource-link">Explore Framework →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">🛡️</div>
-                        <h3 class="resource-title">Safe AI Integration</h3>
-                        <p class="resource-description">Complete framework for responsible AI implementation with risk management, ethical guidelines, and safety protocols.</p>
-                        <a href="safe-ai-integration.html" class="resource-link">Implement Safely →</a>
-                    </div>
+                        <div class="resource-card fade-in">
+                            <div class="resource-icon">🛡️</div>
+                            <h3 class="resource-title">Safe AI Integration</h3>
+                            <p class="resource-description">Complete framework for responsible AI implementation with risk management, ethical guidelines, and safety protocols.</p>
+                            <a href="safe-ai-integration.html" class="resource-link">Implement Safely →</a>
+                        </div>
 
-                    <div class="resource-card fade-in">
-                        <div class="resource-icon">📈</div>
-                        <h3 class="resource-title">Advanced LLMs Guide</h3>
-                        <p class="resource-description">Technical deep-dive into transformer architecture, training methods, and cutting-edge developments in large language models.</p>
-                        <a href="llms-advanced-techniques.html" class="resource-link">Master AI Tools →</a>
+                        <div class="resource-card fade-in">
+                            <div class="resource-icon">🤖</div>
+                            <h3 class="resource-title">How AI Works</h3>
+                            <p class="resource-description">Comprehensive synthesis of AI's evolution, current capabilities, and future prospects from foundations to superintelligence.</p>
+                            <a href="how-ai-works.html" class="resource-link">Understand AI →</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -811,18 +908,15 @@
                         <div class="contact-options">
                             <div class="contact-card">
                                 <h4>📧 Get in Touch</h4>
-                                <p>Ready to discuss your AI transformation strategy?</p>
-                                <a href="mailto:contact@aitransformhub.com" class="contact-link">contact@aitransformhub.com</a>
+                                <p>Contact information coming soon. Check back for updates on how to reach us directly.</p>
                             </div>
                             <div class="contact-card">
                                 <h4>🚀 Enterprise Consulting</h4>
-                                <p>Custom AI transformation frameworks for large organizations.</p>
-                                <a href="mailto:enterprise@aitransformhub.com" class="contact-link">enterprise@aitransformhub.com</a>
+                                <p>Custom AI transformation frameworks for large organizations. Professional services launching soon.</p>
                             </div>
                             <div class="contact-card">
                                 <h4>🛠️ Implementation Support</h4>
-                                <p>Hands-on guidance for implementing AI systems and agents.</p>
-                                <a href="mailto:support@aitransformhub.com" class="contact-link">support@aitransformhub.com</a>
+                                <p>Hands-on guidance for implementing AI systems and agents. Support services in development.</p>
                             </div>
                         </div>
                     </div>
@@ -843,25 +937,32 @@
                     <p><a href="#resources">AI Resources</a></p>
                     <p><a href="#about">About Us</a></p>
                     <p><a href="#contact">Contact</a></p>
-                    <p><a href="building-agents.html">Building AI Agents</a></p>
+                    <p><a href="building-ai-agents.html">Building AI Agents</a></p>
                 </div>
                 <div class="footer-section">
-                    <h3>Popular Guides</h3>
-                    <p><a href="prompt-engineering.html">Prompt Engineering</a></p>
+                    <h3>AI Tools & Systems</h3>
+                    <p><a href="entrepreneur-agent.html">Digital Entrepreneur AI</a></p>
+                    <p><a href="https://claude.ai/public/artifacts/c6c15d76-90a3-44ad-aa28-e32744fc248a" target="_blank">Co-Scientist AI (Demo)</a></p>
                     <p><a href="conscious-ai.html">Consciousness Engineering</a></p>
-                    <p><a href="post-scarcity-economy.html">Post-Scarcity Economy</a></p>
-                    <p><a href="entrepreneur-agent.html">Digital Entrepreneur</a></p>
+                    <p><a href="post-scarcity-economy.html">Post-Scarcity OS</a></p>
                 </div>
                 <div class="footer-section">
-                    <h3>Advanced Resources</h3>
-                    <p><a href="ai-legal-compliance.html">AI Legal & Compliance</a></p>
+                    <h3>Educational Guides</h3>
+                    <p><a href="building-agents.html">Building AI Agents</a></p>
+                    <p><a href="prompt-engineering.html">Prompt Engineering</a></p>
                     <p><a href="advanced-llms.html">Advanced LLMs</a></p>
+                    <p><a href="ai-legal-compliance.html">Legal & Compliance</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Additional Resources</h3>
                     <p><a href="safe-ai-integration.html">Safe AI Integration</a></p>
                     <p><a href="how-ai-works.html">How AI Works</a></p>
+                    <p><a href="agi-readiness-assessment.html">AGI Readiness</a></p>
+                    <p><a href="level-5-ai-organization.html">Level 5 Framework</a></p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 AI Transform Hub. All rights reserved. | Powered by Claude 4</p>
+                <p>&copy; 2025 AI Transform Hub. All rights reserved.</p>
             </div>
         </div>
     </footer>
